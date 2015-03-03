@@ -1,7 +1,16 @@
 from setuptools import setup, find_packages
-import os
 
 from dodocs import utils
+
+classifiers = ["Development Status :: 1 - Planning",
+               "Environment :: Console",
+               "Intended Audience :: Developers",
+               "Intended Audience :: Other Audience",
+               "Programming Language :: Python :: 3.3",
+               "Programming Language :: Python :: 3.4",
+               "Topic :: Documentation",
+               "Topic :: Documentation :: Sphinx",
+               ]
 
 setup(
     # package description and version
@@ -18,7 +27,7 @@ setup(
     zip_safe=False,
 
     # entry points
-    entry_points={"console_scripts": ["dodoc = dodocs.main:main", ],},
+    entry_points={"console_scripts": ["dodoc = dodocs.main:main", ], },
 
     # dependences
     install_requires=[],
