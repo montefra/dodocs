@@ -1,4 +1,11 @@
 """Main function"""
 
+
 def main():
-    pass
+    """
+    Main code
+    """
+
+    from lib.cmdline import parse
+
+    parse()
