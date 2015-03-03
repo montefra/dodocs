@@ -1,13 +1,12 @@
 from setuptools import setup, find_packages
 import os
 
-import dodoc
-
+from dodocs import utils
 
 setup(
     # package description and version
-    name="dodoc",
-    version=dodoc.utils.extract_version()
+    name="dodocs",
+    version=utils.get_version(from_file='dodocs/__init__.py'),
     author="Francesco Montesano",
     author_email="franz.bergesund@gmail.com",
     description="Heterogeneous collection of HETDEX-related functionalities",
@@ -19,13 +18,13 @@ setup(
     zip_safe=False,
 
     # entry points
-    entry_points={"dodoc": "dodoc.main:main"}
+    entry_points={"console_scripts": ["dodoc = dodocs.main:main", ],},
 
     # dependences
     install_requires=[],
     extras_require={'doc': ['sphinx', 'numpydoc']},
 
     # tests
-    tests_requires=['nose>=1', 'coverage']
+    tests_require=['nose>=1', 'coverage'],
     test_suite='nose.collector',
 )

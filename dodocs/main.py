@@ -1,11 +1,10 @@
 """Main function"""
 
+from dodocs.cmdline import parse
+
 
 def main():
     """
     Main code
     """
-
-    from lib.cmdline import parse
-
     parse()
