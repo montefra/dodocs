@@ -1,4 +1,7 @@
+"""Install the library and the script ``dodoc``
+"""
 from setuptools import setup, find_packages
+import sys
 
 from dodocs import utils
 
@@ -36,4 +39,6 @@ setup(
     # tests
     tests_require=['nose>=1', 'coverage'],
     test_suite='nose.collector',
+
+    classifiers=classifiers,
 )
