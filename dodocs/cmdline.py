@@ -3,6 +3,7 @@
 
 import argparse as ap
 
+import dodocs.pyvenvex as pyvenv
 from dodocs import utils
 
 DEF_FORMATTER = ap.ArgumentDefaultsHelpFormatter
@@ -29,7 +30,8 @@ def parse(argv=None):
                           formatter_class=DEF_FORMATTER)
 
     p.add_argument('--version', action='version', version=utils.get_version())
-    # p.add_argument("-v", "--verbose", action="store_true", help="Verbose mode")
+    # p.add_argument("-v", "--verbose", action="store_true", help="Verbose
+    # mode")
 
     # add subparsers
     subparser = p.add_subparsers(dest='subparser_name')
@@ -38,6 +40,6 @@ def parse(argv=None):
     venv = subparser.add_parser("create", description="""Create the virtual
                                 environment""", formatter_class=DEF_FORMATTER)
 
-    venv.add_argument("name", help="Name of the virtual environment")
+    venv = pyvenv.venv_cmd_arguments(venv)
 
     return p.parse_args(args=argv)
