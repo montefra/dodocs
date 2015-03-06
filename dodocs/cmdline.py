@@ -36,6 +36,10 @@ def parse(argv=None):
     # add subparsers
     subparser = p.add_subparsers(dest='subparser_name')
 
+    # create profile
+    venv = subparser.add_parser("profile", description="""Create the
+                                profile""", formatter_class=DEF_FORMATTER)
+
     # create virtual environment and place there the configuration file
     venv = subparser.add_parser("mkvenv", description="""Create the virtual
                                 environment""", formatter_class=DEF_FORMATTER)
