@@ -4,7 +4,7 @@ Configuration driven code to create and deploy documentation
 
 ## Installation
 
-    pip install https://github.com/montefra/dodocs.git
+    pip install git+https://github.com/montefra/dodocs.git
 
 ## Use
 
