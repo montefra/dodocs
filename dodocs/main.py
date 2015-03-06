@@ -1,4 +1,8 @@
-"""Main function"""
+"""Main function
+
+Copyright (c) 2015 Francesco Montesano
+MIT Licence
+"""
 
 from dodocs.cmdline import parse
 
@@ -11,6 +15,10 @@ def main():
 
     if args.subparser_name is None:
         raise ValueError("No command provided")
-    elif args.subparser_name == "create":
-        import dodocs.pyvenvex as pyenv
-        pyenv.create_venv(args)
+    elif args.subparser_name == "mkvenv":
+        from dodocs.venvs import create
+        create(args)
+    elif args.subparser_name == "build":
+        print("building")
+    else:
+        raise ValueError("Command {} is not valid".format(args.subparser_name))

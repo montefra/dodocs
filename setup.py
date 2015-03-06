@@ -26,6 +26,7 @@ setup(
 
     # list of packages and data
     packages=find_packages(),
+    include_package_data=True,
     # don't zip when installing
     zip_safe=False,
 

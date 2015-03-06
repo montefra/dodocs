@@ -8,8 +8,8 @@ ValueError
     for Python version < 3.3
 
 Original copyright (C) 2013 Vinay Sajip. New BSD License.
-copyright 2015 Francesco Montesano.
-
+Copyright 2015 Francesco Montesano.
+MIT Licence
 """
 
 import os
@@ -187,55 +187,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         self.install_script(context, 'pip', url)
 
 
-def venv_cmd_arguments(parser):
-    """Add to ``parser`` the command line arguments needed to create the
-    virtual environment.
-
-    Parameters
-    ----------
-    parser : instances of :class:`argparse.ArgumentParser`
-        parser to which the arguments are added
-
-    Returns
-    -------
-    parser
-    """
-    parser.add_argument('dirs', metavar='ENV_DIR', nargs='+',
-                        help='A directory to create the environment in.')
-    parser.add_argument('--no-setuptools', default=False,
-                        action='store_true', dest='nodist',
-                        help="""Don't install setuptools or pip in the virtual
-                        environment.""")
-    parser.add_argument('--no-pip', default=False,
-                        action='store_true', dest='nopip',
-                        help="Don't install pip in the virtual environment.")
-    parser.add_argument('--system-site-packages', default=False,
-                        action='store_true', dest='system_site',
-                        help='''Give the virtual environment access to the
-                        system site-packages dir.''')
-    if os.name == 'nt':
-        use_symlinks = False
-    else:
-        use_symlinks = True
-    parser.add_argument('--symlinks', default=use_symlinks,
-                        action='store_true', dest='symlinks',
-                        help='''Try to use symlinks rather than copies, when
-                        symlinks are not the default for the platform.''')
-    parser.add_argument('--clear', default=False, action='store_true',
-                        dest='clear', help='''Delete the contents of the
-                        environment directory if it already exists, before
-                        environment creation.''')
-    parser.add_argument('--upgrade', default=False, action='store_true',
-                        dest='upgrade', help='''Upgrade the environment
-                        directory to use this version of Python, assuming
-                        Python has been upgraded in-place.''')
-    parser.add_argument('--verbose', default=False, action='store_true',
-                        dest='verbose', help='''Display the output from the
-                        scripts which install setuptools and pip.''')
-    return parser
-
-
-def create_venv(options):
+def build_venv(options):
     """Create the virtual environments
 
     Parameters
@@ -254,20 +206,3 @@ def create_venv(options):
                                  verbose=options.verbose)
     for d in options.dirs:
         builder.create(d)
-
-
-if __name__ == '__main__':
-    rc = 1
-    try:
-        import argparse as ap
-        parser = argparse.ArgumentParser(prog=__name__,
-                                         description='''Creates virtual Python
-                                         environments in one or more target
-                                         directories.''')
-        parser = venv_cmd_arguments(parser)
-        
-        main(parser.parse_args(args))
-        rc = 0
-    except Exception as e:
-        print('Error: %s' % e, file=sys.stderr)
-    sys.exit(rc)

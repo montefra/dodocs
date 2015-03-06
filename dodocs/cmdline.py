@@ -3,7 +3,7 @@
 
 import argparse as ap
 
-import dodocs.pyvenvex as pyvenv
+from dodocs.venvs import venv_cmd_arguments
 from dodocs import utils
 
 DEF_FORMATTER = ap.ArgumentDefaultsHelpFormatter
@@ -37,9 +37,14 @@ def parse(argv=None):
     subparser = p.add_subparsers(dest='subparser_name')
 
     # create virtual environment and place there the configuration file
-    venv = subparser.add_parser("create", description="""Create the virtual
+    venv = subparser.add_parser("mkvenv", description="""Create the virtual
                                 environment""", formatter_class=DEF_FORMATTER)
 
-    venv = pyvenv.venv_cmd_arguments(venv)
+    venv = venv_cmd_arguments(venv)
+
+    # create virtual environment and place there the configuration file
+    venv = subparser.add_parser("build", description="""Create the
+                                documentation""",
+                                formatter_class=DEF_FORMATTER)
 
     return p.parse_args(args=argv)
