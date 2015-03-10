@@ -4,10 +4,9 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-__version__ = "0.0.1"
-
-
 from dodocs.cmdline import parse
+
+__version__ = "0.0.1"
 
 
 def main():
@@ -18,6 +17,8 @@ def main():
 
     if args.subparser_name is None:
         raise ValueError("No command provided")
+    elif args.subparser_name == "profile":
+        pass
     elif args.subparser_name == "mkvenv":
         from dodocs.venvs import create
         create(args)
