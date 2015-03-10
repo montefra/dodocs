@@ -1,5 +1,7 @@
 """Generic utilities"""
 
+import os
+
 
 def get_version(from_file=None):
     """
@@ -22,3 +24,16 @@ def get_version(from_file=None):
                     version = line.split('=')[1].strip().strip('"')
                     break
     return version
+
+
+def dodocs_directory():
+    """Returns the default ``dodocs`` directory
+
+    Returns
+    -------
+    dodocs_dir: string
+        dodocs directory
+    """
+    home = os.path.expanduser('~')
+    dodocs_dir = os.path.join(home, '.dodocs')
+    return dodocs_dir

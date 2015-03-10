@@ -24,8 +24,7 @@ def wrap_run(command_subclass):
 
     def modified_run(self):
         # check if the dodocs_dir exists or not
-        home = os.path.expanduser('~')
-        dodocs_dir = os.path.join(home, '.dodocs')
+        dodocs_dir = utils.dodocs_directory()
         is_new, is_dir = False, False
         if not os.path.exists(dodocs_dir):
             is_new = True
@@ -96,7 +95,7 @@ setup(
     zip_safe=False,
 
     # entry points
-    entry_points={"console_scripts": ["dodoc = dodocs.main:main", ], },
+    entry_points={"console_scripts": ["dodoc = dodocs:main", ], },
 
     # dependences
     install_requires=[],
