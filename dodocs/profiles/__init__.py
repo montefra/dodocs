@@ -51,9 +51,9 @@ def profiles_cmd_arguments(subparser, formatter_class):
 
     profile_create.add_argument('name', help='''Name of the profile to
                                 create''')
-    profile_create.add_argument('-c', '--clean', action='store_true',
+    profile_create.add_argument('-f', '--force', action='store_true',
                                 help='''If the profile already exists, remove it
-                                and recreate new. Do it at your own risk''')
+                                and recreate new. Do it at your own risk!''')
     return subparser
 
 
@@ -69,6 +69,7 @@ def main(args):
         from dodocs.profiles.plist import plist
         plist(args)
     elif args.profile_cmd == "create":
-        print("create a profile")
+        from dodocs.profiles.create import create
+        create(args)
     else:
         raise ValueError("Command {} is not valid".format(args.profile_cmd))
