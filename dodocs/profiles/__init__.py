@@ -28,7 +28,10 @@ def profiles_cmd_arguments(subparser, formatter_class):
                                    help="Profiles management")
 
     # create sub commands for the profile subparser
-    profile_cmd = profile.add_subparsers(title="Actions", dest='profile_cmd')
+    profile_cmd = profile.add_subparsers(title="Actions", dest='profile_cmd',
+                                         description="""Type '%(prog)s cmd -h'
+                                         for detailed information about the
+                                         subcommands""")
 
     # list the profiles
     description = "List the available profiles."
@@ -52,3 +55,20 @@ def profiles_cmd_arguments(subparser, formatter_class):
                                 help='''If the profile already exists, remove it
                                 and recreate new. Do it at your own risk''')
     return subparser
+
+
+def main(args):
+    """Manage the profiles
+
+    Parameters
+    ----------
+    args : namespace
+        parsed command line arguments
+    """
+    if args.profile_cmd == "list":
+        from dodocs.profiles.plist import plist
+        plist(args)
+    elif args.profile_cmd == "create":
+        print("create a profile")
+    else:
+        raise ValueError("Command {} is not valid".format(args.profile_cmd))

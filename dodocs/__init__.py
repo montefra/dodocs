@@ -18,7 +18,8 @@ def main():
     if args.subparser_name is None:
         raise ValueError("No command provided")
     elif args.subparser_name == "profile":
-        pass
+        from dodocs.profiles import main
+        main(args)
     elif args.subparser_name == "mkvenv":
         from dodocs.venvs import create
         create(args)
