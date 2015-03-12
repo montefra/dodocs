@@ -63,6 +63,20 @@ class CustomInstallCommand(install):
     pass
 
 
+def extras_require():
+    """Deal with extra requirements
+
+    Returns
+    -------
+    dictionary of requirements
+    """
+    req_dic = {'doc': ['sphinx', 'numpydoc', 'alabaster', ],
+               }
+
+    req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild', ]
+
+    return req_dic
+
 classifiers = ["Development Status :: 1 - Planning",
                "Environment :: Console",
                "Intended Audience :: Developers",
@@ -99,7 +113,7 @@ setup(
 
     # dependences
     install_requires=['colorama'],
-    extras_require={'doc': ['sphinx', 'numpydoc']},
+    extras_require=extras_require(),
     # bootstrap nose to make `nosetests` available to setup.py
     setup_requires=['nose>=1', ],
 
