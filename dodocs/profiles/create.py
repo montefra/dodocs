@@ -6,6 +6,9 @@ MIT Licence
 
 import os
 import shutil
+import sys
+
+import colorama
 
 import dodocs.config as dconf
 import dodocs.utils as dutils
@@ -26,16 +29,17 @@ def create(args):
         os.mkdir(profile_dir)
     elif os.path.isdir(profile_dir):
         if args.force:
-            print("Removing and recreating '{}'".format(profile_dir))
-            os.rmdir(profile_dir)
+            print(colorama.Fore.YELLOW +
+                  "Removing and recreating '{}'".format(profile_dir))
+            shutil.rmtree(profile_dir)
             os.mkdir(profile_dir)
         else:
-            msg = "'{pd}' already exists. Aborting."
-            raise ValueError(msg.format(pd=profile_dir))
+            msg = colorama.Fore.RED + "'{pd}' already exists. Aborting."
+            sys.exit(msg.format(pd=profile_dir))
     else:
-        msg = "'{pd}' exists and is a file. I don't know what to do."
-        raise ValueError(msg.format(pd=profile_dir))
+        msg = colorama.Fore.RED + "'{pd}' exists and is a file. I don't know what to do."
+        sys.exit(msg.format(pd=profile_dir))
 
     cfg_file = dconf.get_sample_cfg_file()
     shutil.copy(cfg_file, profile_dir)
-    print("profile {} created".format(args.name))
+    print(colorama.Fore.GREEN + "profile '{}' created".format(args.name))

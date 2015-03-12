@@ -6,6 +6,8 @@ MIT Licence
 
 import os
 
+import colorama
+
 from dodocs import utils
 
 
@@ -19,8 +21,8 @@ def plist(args):
     """
     dirnames = next(os.walk(utils.dodocs_directory()))[1]
     if dirnames:
-        print("Available profiles:")
+        print(colorama.Fore.GREEN + "Available profiles:")
         for d in dirnames:
             print("  * {}".format(d))
     else:
-        print("No profile found")
+        print(colorama.Fore.RED + "No profile found")

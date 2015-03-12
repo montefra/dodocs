@@ -4,9 +4,15 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
+import sys
+
+import colorama
+
 from dodocs.cmdline import parse
 
 __version__ = "0.0.1"
+
+colorama.init(autoreset=True)
 
 
 def main(argv=None):
@@ -29,6 +35,6 @@ def main(argv=None):
     # elif args.subparser_name == "build":
     #     print("building")
     else:
-        msg = "Please provide a command."
+        msg = colorama.Fore.RED + "Please provide a command."
         msg += " Valid commands are:\n * profile"  # \n * create"
-        raise ValueError(msg)
+        sys.exit(msg)

@@ -6,6 +6,10 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
+import sys
+
+import colorama
+
 from dodocs import utils
 
 
@@ -72,6 +76,6 @@ def main(args):
         from dodocs.profiles.create import create
         create(args)
     else:
-        msg = "Please provide a command."
+        msg = colorama.Fore.RED + "Please provide a command."
         msg += " Valid commands are:\n * list\n * create"
-        raise ValueError(msg)
+        sys.exit(msg)

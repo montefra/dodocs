@@ -98,7 +98,7 @@ setup(
     entry_points={"console_scripts": ["dodoc = dodocs:main", ], },
 
     # dependences
-    install_requires=[],
+    install_requires=['colorama'],
     extras_require={'doc': ['sphinx', 'numpydoc']},
     # bootstrap nose to make `nosetests` available to setup.py
     setup_requires=['nose>=1', ],
