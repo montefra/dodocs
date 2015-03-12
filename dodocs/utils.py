@@ -1,4 +1,8 @@
-"""Generic utilities"""
+"""Generic utilities
+
+Copyright (c) 2015 Francesco Montesano
+MIT Licence
+"""
 
 import os
 

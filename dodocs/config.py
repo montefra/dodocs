@@ -4,6 +4,8 @@ Tasks:
 * creates the example configuration file when creating the virtual environment;
 * reads and parse the configuration file otherwise
 
+Copyright (c) 2015 Francesco Montesano
+MIT Licence
 """
 
 import configparser as confp

@@ -1,5 +1,7 @@
 """Create the profile.
 
+Copyright (c) 2015 Francesco Montesano
+MIT Licence
 """
 
 import os

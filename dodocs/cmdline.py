@@ -1,4 +1,7 @@
 """Command line parser
+
+Copyright (c) 2015 Francesco Montesano
+MIT Licence
 """
 
 import argparse as ap
