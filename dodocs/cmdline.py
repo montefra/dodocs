@@ -43,14 +43,14 @@ def parse(argv=None):
     subparser = profiles.profiles_cmd_arguments(subparser, DEF_FORMATTER)
 
     # create virtual environment and place there the configuration file
-    venv = subparser.add_parser("mkvenv", description="""Create the virtual
-                                environment""", formatter_class=DEF_FORMATTER)
+    # venv = subparser.add_parser("mkvenv", description="""Create the virtual
+    #                             environment""", formatter_class=DEF_FORMATTER)
 
-    venv = venv_cmd_arguments(venv)
+    # venv = venv_cmd_arguments(venv)
 
     # create virtual environment and place there the configuration file
-    venv = subparser.add_parser("build", description="""Create the
-                                documentation""",
-                                formatter_class=DEF_FORMATTER)
+    # venv = subparser.add_parser("build", description="""Create the
+    #                             documentation""",
+    #                             formatter_class=DEF_FORMATTER)
 
     return p.parse_args(args=argv)
