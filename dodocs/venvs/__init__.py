@@ -75,5 +75,3 @@ def create(args):
     cfg_file = dconf.get_sample_cfg_file()
     for d in args.dirs:
         shutil.copy(cfg_file, d)
-    
-        
