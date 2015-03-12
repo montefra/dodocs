@@ -11,4 +11,4 @@ def test_list():
     "List profiles"
     command_line = 'profile list'
 
-    dodocs.main(command_line.split)
+    dodocs.main(command_line.split())

@@ -72,4 +72,6 @@ def main(args):
         from dodocs.profiles.create import create
         create(args)
     else:
-        raise ValueError("Command {} is not valid".format(args.profile_cmd))
+        msg = "Please provide a command."
+        msg += " Valid commands are:\n * list\n * create"
+        raise ValueError(msg)

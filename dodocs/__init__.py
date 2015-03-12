@@ -20,9 +20,7 @@ def main(argv=None):
     """
     args = parse(argv=argv)
 
-    if args.subparser_name is None:
-        raise ValueError("No command provided")
-    elif args.subparser_name == "profile":
+    if args.subparser_name == "profile":
         from dodocs.profiles import main
         main(args)
     # elif args.subparser_name == "mkvenv":
@@ -31,4 +29,6 @@ def main(argv=None):
     # elif args.subparser_name == "build":
     #     print("building")
     else:
-        raise ValueError("Command {} is not valid".format(args.subparser_name))
+        msg = "Please provide a command."
+        msg += " Valid commands are:\n * profile"  # \n * create"
+        raise ValueError(msg)
