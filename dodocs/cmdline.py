@@ -6,7 +6,6 @@ MIT Licence
 
 import argparse as ap
 
-from dodocs.venvs import venv_cmd_arguments
 from dodocs import profiles
 from dodocs import utils
 
@@ -45,15 +44,8 @@ def parse(argv=None):
     # create profile
     subparser = profiles.profiles_cmd_arguments(subparser, DEF_FORMATTER)
 
-    # create virtual environment and place there the configuration file
-    # venv = subparser.add_parser("mkvenv", description="""Create the virtual
-    #                             environment""", formatter_class=DEF_FORMATTER)
-
-    # venv = venv_cmd_arguments(venv)
-
-    # create virtual environment and place there the configuration file
-    # venv = subparser.add_parser("build", description="""Create the
+    # build the whole thing
+    # build = subparser.add_parser("build", description="""Create the
     #                             documentation""",
     #                             formatter_class=DEF_FORMATTER)
-
     return p.parse_args(args=argv)
