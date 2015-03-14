@@ -32,12 +32,12 @@ def main(argv=None):
         # defaults profile to list
         if args.subparser_name == 'profile' and args.profile_cmd is None:
             main([args.subparser_name, 'list'])
-
-        # in the other cases suggest to run -h
-        msg = colorama.Fore.RED + "Please provide a valid command."
-        print(msg)
-        msg = "Type\n  " + sys.argv[0]
-        if args.subparser_name is not None:
-            msg += " " + args.subparser_name
-        msg += ' -h'
-        print(msg)
+        else:
+            # in the other cases suggest to run -h
+            msg = colorama.Fore.RED + "Please provide a valid command."
+            print(msg)
+            msg = "Type\n  " + sys.argv[0]
+            if args.subparser_name is not None:
+                msg += " " + args.subparser_name
+            msg += ' -h'
+            print(msg)
