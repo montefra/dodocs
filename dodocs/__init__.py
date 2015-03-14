@@ -26,15 +26,18 @@ def main(argv=None):
     """
     args = parse(argv=argv)
 
-    if args.subparser_name == "profile":
-        from dodocs.profiles import main
-        main(args)
-    # elif args.subparser_name == "mkvenv":
-    #     from dodocs.venvs import create
-    #     create(args)
-    # elif args.subparser_name == "build":
-    #     print("building")
-    else:
-        msg = colorama.Fore.RED + "Please provide a command."
-        msg += " Valid commands are:\n * profile"  # \n * create"
-        sys.exit(msg)
+    try:
+        args.func(args)
+    except AttributeError:
+        # defaults profile to list
+        if args.subparser_name == 'profile' and args.profile_cmd is None:
+            main([args.subparser_name, 'list'])
+
+        # in the other cases suggest to run -h
+        msg = colorama.Fore.RED + "Please provide a valid command."
+        print(msg)
+        msg = "Type\n  " + sys.argv[0]
+        if args.subparser_name is not None:
+            msg += " " + args.subparser_name
+        msg += ' -h'
+        print(msg)
