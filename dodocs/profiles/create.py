@@ -53,7 +53,13 @@ def create(args):
         if args.link:
             profile_dir = os.path.join(args.link, name)
             link_dir = os.path.join(dodocs_dir, name)
-        os.mkdir(profile_dir)
+        try:
+            os.mkdir(profile_dir)
+        except FileExistsError:
+            msg = colorama.Fore.RED + "'{pd}' already exists. Aborting."
+            warnings.warn(msg.format(pd=profile_dir), ProfileWarning)
+            continue
+
         cfg_file = dconf.get_sample_cfg_file()
         shutil.copy(cfg_file, profile_dir)
         if args.link:
