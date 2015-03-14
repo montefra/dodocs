@@ -40,7 +40,8 @@ def profiles_cmd_arguments(subparser, formatter_class):
     # list the profiles
     description = "List the available profiles."
     profile_list = profile_cmd.add_parser("list", description=description,
-                                          help=description + " Default action")
+                                          help=description + " Default action",
+                                          aliases=['ls'])
     # profile_list.add_argument("-v", "--verbose", action="store_true")
 
     # create the profiles
@@ -51,7 +52,8 @@ def profiles_cmd_arguments(subparser, formatter_class):
                      """
     description = description.format(home=utils.dodocs_directory())
     profile_create = profile_cmd.add_parser("create", description=description,
-                                            help="""Create a new profile""")
+                                            help="""Create a new profile""",
+                                            aliases=['new'])
 
     profile_create.add_argument('name', nargs="+", help='''Name(s) of the
                                 profile(s) to create''')
@@ -63,6 +65,15 @@ def profiles_cmd_arguments(subparser, formatter_class):
     {home} directory.""".format(home=utils.dodocs_directory())
     profile_create.add_argument('-l', '--link', help=_help)
 
+    # remove profiles
+    description = """Remove existing profiles from the '{home}' directory.  """
+    description = description.format(home=utils.dodocs_directory())
+    profile_create = profile_cmd.add_parser("remove", description=description,
+                                            help="""Create a new profile""",
+                                            aliases=["rm"])
+
+    profile_create.add_argument('name', nargs="+", help='''Name(s) of the
+                                profile(s) to remove''')
     return subparser
 
 
@@ -74,12 +85,15 @@ def main(args):
     args : namespace
         parsed command line arguments
     """
-    if args.profile_cmd == "list":
+    if args.profile_cmd in ["list", 'ls']:
         from dodocs.profiles.plist import plist
         plist(args)
-    elif args.profile_cmd == "create":
+    elif args.profile_cmd in ["create", "new"]:
         from dodocs.profiles.create import create
         create(args)
+    elif args.profile_cmd in ["remove", "rm"]:
+        from dodocs.profiles.remove import remove
+        remove(args)
     else:
         msg = colorama.Fore.RED + "Please provide a command."
         msg += " Valid commands are:\n * list\n * create"
