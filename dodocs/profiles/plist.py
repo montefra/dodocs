@@ -19,10 +19,15 @@ def plist(args):
     args : namespace
         parsed command line arguments
     """
-    dirnames = next(os.walk(utils.dodocs_directory()))[1]
+    dodocs_dir = utils.dodocs_directory()
+    dirpath, dirnames = next(os.walk(dodocs_dir))[:2]
     if dirnames:
         print(colorama.Fore.GREEN + "Available profiles:")
         for d in dirnames:
-            print("  * {}".format(d))
+            profile_dir = os.path.join(dodocs_dir, d)
+            msg = "  * {}".format(d)
+            if os.path.islink(profile_dir):
+                msg += " (-> {})".format(os.path.realpath(profile_dir))
+            print(msg)
     else:
         print(colorama.Fore.RED + "No profile found")
