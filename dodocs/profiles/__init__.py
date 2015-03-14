@@ -53,11 +53,16 @@ def profiles_cmd_arguments(subparser, formatter_class):
     profile_create = profile_cmd.add_parser("create", description=description,
                                             help="""Create a new profile""")
 
-    profile_create.add_argument('name', help='''Name of the profile to
-                                create''')
+    profile_create.add_argument('name', nargs="+", help='''Name(s) of the
+                                profile(s) to create''')
     profile_create.add_argument('-f', '--force', action='store_true',
-                                help='''If the profile already exists, remove it
+                                help='''If the profile(s) already exists, remove it
                                 and recreate new. Do it at your own risk!''')
+
+    _help = """Create the profile(s) in directory %(dest)s and symlink it in the
+    {home} directory.""".format(home=utils.dodocs_directory())
+    profile_create.add_argument('-l', '--link', help=_help)
+
     return subparser
 
 
