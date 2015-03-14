@@ -6,11 +6,11 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-import sys
-
-import colorama
-
 from dodocs import utils
+
+from dodocs.profiles.plist import plist
+from dodocs.profiles.create import create
+from dodocs.profiles.remove import remove
 
 
 def profiles_cmd_arguments(subparser, formatter_class):
@@ -43,6 +43,7 @@ def profiles_cmd_arguments(subparser, formatter_class):
                                           help=description + " Default action",
                                           aliases=['ls'])
     # profile_list.add_argument("-v", "--verbose", action="store_true")
+    profile_list.set_defaults(func=plist)
 
     # create the profiles
     description = """Create a new profile in the '{home}' directory. A profile
@@ -65,36 +66,17 @@ def profiles_cmd_arguments(subparser, formatter_class):
     {home} directory.""".format(home=utils.dodocs_directory())
     profile_create.add_argument('-l', '--link', help=_help)
 
+    profile_create.set_defaults(func=create)
+
     # remove profiles
     description = """Remove existing profiles from the '{home}' directory.  """
     description = description.format(home=utils.dodocs_directory())
-    profile_create = profile_cmd.add_parser("remove", description=description,
-                                            help="""Create a new profile""",
-                                            aliases=["rm"])
+    profile_rm = profile_cmd.add_parser("remove", description=description,
+                                        help="""Create a new profile""",
+                                        aliases=["rm"])
 
-    profile_create.add_argument('name', nargs="+", help='''Name(s) of the
+    profile_rm.add_argument('name', nargs="+", help='''Name(s) of the
                                 profile(s) to remove''')
+    profile_rm.set_defaults(func=remove)
+
     return subparser
-
-
-def main(args):
-    """Manage the profiles
-
-    Parameters
-    ----------
-    args : namespace
-        parsed command line arguments
-    """
-    if args.profile_cmd in ["list", 'ls']:
-        from dodocs.profiles.plist import plist
-        plist(args)
-    elif args.profile_cmd in ["create", "new"]:
-        from dodocs.profiles.create import create
-        create(args)
-    elif args.profile_cmd in ["remove", "rm"]:
-        from dodocs.profiles.remove import remove
-        remove(args)
-    else:
-        msg = colorama.Fore.RED + "Please provide a command."
-        msg += " Valid commands are:\n * list\n * create"
-        sys.exit(msg)
