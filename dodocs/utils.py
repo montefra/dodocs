@@ -41,3 +41,14 @@ def dodocs_directory():
     home = os.path.expanduser('~')
     dodocs_dir = os.path.join(home, '.dodocs')
     return dodocs_dir
+
+
+def format_docstring(*args, **kwargs):
+    """Decorator to format the docstring using :func:`string.format` syntax
+    """
+    def wrapper(func):
+        doc = func.__doc__
+        doc = doc.format(*args, **kwargs)
+        func.__doc__ = doc
+        return func
+    return wrapper
