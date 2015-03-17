@@ -6,6 +6,7 @@ MIT Licence
 
 import os
 import shutil
+import string
 import warnings
 
 import colorama
@@ -60,8 +61,25 @@ def create(args):
             warnings.warn(msg.format(pd=profile_dir), ProfileWarning)
             continue
 
-        cfg_file = dconf.get_sample_cfg_file()
-        shutil.copy(cfg_file, profile_dir)
+        copy_config(profile_dir)
         if args.link:
             os.symlink(profile_dir, link_dir)
         print(colorama.Fore.GREEN + "profile '{}' created".format(name))
+
+
+def copy_config(profile_dir):
+    """Copy the configuration file into ``profile_dir``.
+
+    Substitute the version into the file.
+
+    Parameters
+    ----------
+    profile_dir : string
+        name of the profile directory
+    """
+    cfg_file = dconf.get_sample_cfg_file()
+    with open(cfg_file, 'r') as inf,\
+                open(os.path.join(profile_dir, dconf.CONF_FILE), 'w') as outf:
+        conf = string.Template(inf.read())
+        conf = conf.safe_substitute(version=dutils.get_version())
+        outf.write(conf)
