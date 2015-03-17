@@ -6,6 +6,7 @@ MIT Licence
 
 import argparse as ap
 
+from dodocs import mkdoc
 from dodocs import profiles
 from dodocs import utils
 
@@ -45,7 +46,5 @@ def parse(argv=None):
     subparser = profiles.profiles_cmd_arguments(subparser, DEF_FORMATTER)
 
     # build the whole thing
-    # build = subparser.add_parser("build", description="""Create the
-    #                             documentation""",
-    #                             formatter_class=DEF_FORMATTER)
+    subparser = mkdoc.build_cmd_arguments(subparser, DEF_FORMATTER)
     return p.parse_args(args=argv)
