@@ -1,6 +1,9 @@
 """Build the documentation
 """
 
+import dodocs.utils as dutils
+import dodocs.config as dconf
+
 
 def build_cmd_arguments(subparser, formatter_class):
     """Create the ``build`` parser and fill it with the relevant options.
@@ -22,8 +25,23 @@ def build_cmd_arguments(subparser, formatter_class):
                                  help="Documentation builder",
                                  aliases=['build', 'make'])
 
-    # build.set_defaults(func=plist)
+    build.set_defaults(func=build_doc)
     build.add_argument('name', nargs="+", help="""Name(s) of the
                        profile(s) to process""")
 
     return subparser
+
+
+def build_doc(args):
+    """Build the documentation for the given profiles.
+
+    Parameters
+    ----------
+    args : namespace
+        parsed command line arguments
+    """
+
+    dodocs_dir = dutils.dodocs_directory()
+
+    for name in args.name:
+        dconf.get_config(name)
