@@ -1,5 +1,11 @@
 """Generic utilities
 
+Notes
+-----
+
+Make sure that this module imports only standard library modules, as it is used
+during the setup. It is possible to test it?
+
 Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """

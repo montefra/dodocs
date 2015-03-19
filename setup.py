@@ -9,7 +9,12 @@ from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 
-from dodocs import utils
+# import only dodocs.utils without relying on it to be in the package to avoid
+# problems with requirements
+dd = os.path.join(os.path.split(__file__)[0], 'dodocs')
+sys.path.insert(0, dd)
+from utils import get_version, dodocs_directory
+sys.path.pop(0)
 
 
 # Custom install and develop. Create the directory ``.dodocs`` after
@@ -24,7 +29,7 @@ def wrap_run(command_subclass):
 
     def modified_run(self):
         # check if the dodocs_dir exists or not
-        dodocs_dir = utils.dodocs_directory()
+        dodocs_dir = dodocs_directory()
         is_new, is_dir = False, False
         if not os.path.exists(dodocs_dir):
             is_new = True
@@ -90,7 +95,7 @@ classifiers = ["Development Status :: 1 - Planning",
 setup(
     # package description and version
     name="dodocs",
-    version=utils.get_version(from_file='dodocs/__init__.py'),
+    version=get_version(from_file='dodocs/__init__.py'),
     author="Francesco Montesano",
     author_email="franz.bergesund@gmail.com",
     description="Heterogeneous collection of HETDEX-related functionalities",
