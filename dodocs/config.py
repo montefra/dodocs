@@ -15,11 +15,20 @@ import colorama
 
 import dodocs.utils as du
 
-# name of the configuration file
 CONF_FILE = "dodocs_setup.cfg"
+"name of the configuration file"
+
+EXPECTED_SECTIONS = ['general']
+"""Name of the sections that must be always present in the configuration file
+and that are ignored when searching for projects"""
 
 # private dictionary storing configurations
 _config_dic = {}
+
+
+class DodocConfigError(confp.Error):
+    """Error with the configuration"""
+    pass
 
 
 def get_sample_cfg_file():
@@ -104,11 +113,37 @@ def check_edited(conf, profile):
         configuration object
     profile : string
         name of the profile
+
+    Raises
+    ------
+    DodocConfigError
+        if the configuration file has never been edited
     """
     try:
         if conf.getboolean('general', 'is_edited'):
             msg = ("[{p}] The configuration file has likely not been edited."
                    " Aborting")
-            print(colorama.Fore.RED + msg.format(p=profile))
+            raise DodocConfigError(msg.format(p=profile))
     except confp.NoOptionError:
         pass
+
+
+def check_sections(conf, profile):
+    """Check that the expected sections are present in the configuration file 
+
+    Parameters
+    ----------
+    conf : :class:`confp.ConfigParser` instance
+        configuration object
+    profile : string
+        name of the profile
+
+    Raises
+    ------
+    DodocConfigError
+        if the configuration file does not contain the required sections
+    """
+    for es in EXPECTED_SECTIONS:
+        if es not in conf.sections:
+            msg = "[{p}] Mandatory section '{s}' is missing"
+            raise DodocConfigError(msg.format(p=profile, s=es))

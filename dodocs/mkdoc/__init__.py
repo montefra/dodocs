@@ -1,5 +1,10 @@
 """Build the documentation
+
+Copyright (c) 2015 Francesco Montesano
+MIT Licence
 """
+
+import colorama
 
 import dodocs.utils as dutils
 import dodocs.config as dconf
@@ -44,4 +49,13 @@ def build_doc(args):
     dodocs_dir = dutils.dodocs_directory()
 
     for name in args.name:
-        dconf.get_config(name)
+        print(colorama.Fore.GREEN + "Building documentation for profile"
+              " {}".format(name))
+        try:
+            dconf.get_config(name)
+        except dconf.DodocConfigError as e:
+            print(colorama.Fore.RED + str(e))
+            print(colorama.Fore.RED + "Profile {} won't be built")
+            continue
+
+
