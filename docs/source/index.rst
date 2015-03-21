@@ -6,17 +6,32 @@
 Welcome to dodocs's documentation!
 ==================================
 
-Contents:
+``Dodocs`` wants to be a tool to automatically build documentation for multiple
+projects in various languages, move it into a common directory and create an
+index.
+
+How to use it
+-------------
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+
+    usage
+    config
+
+API
+---
+
+.. toctree::
+    :maxdepth: 2
+
+    api/index
 
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
