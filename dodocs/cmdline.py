@@ -33,8 +33,7 @@ def parse(argv=None):
                           formatter_class=DEF_FORMATTER)
 
     p.add_argument('--version', action='version', version=utils.get_version())
-    # p.add_argument("-v", "--verbose", action="store_true", help="Verbose
-    # mode")
+    p.add_argument("-v", "--verbose", action="store_true", help="Verbose mode")
 
     # add subparsers
     subparser = p.add_subparsers(title='Subcommands', dest='subparser_name',

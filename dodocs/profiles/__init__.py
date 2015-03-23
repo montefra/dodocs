@@ -42,7 +42,6 @@ def profiles_cmd_arguments(subparser, formatter_class):
     profile_list = profile_cmd.add_parser("list", description=description,
                                           help=description + " Default action",
                                           aliases=['ls'])
-    # profile_list.add_argument("-v", "--verbose", action="store_true")
     profile_list.set_defaults(func=plist)
 
     # create the profiles
