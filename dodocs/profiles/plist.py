@@ -9,6 +9,7 @@ import os
 import colorama
 
 from dodocs import utils
+from dodocs.logger import getLogger
 
 
 def plist(args):
@@ -19,6 +20,9 @@ def plist(args):
     args : namespace
         parsed command line arguments
     """
+    log = getLogger()
+
+    log.debug("Listing profiles")
     dodocs_dir = utils.dodocs_directory()
     dirpath, dirnames = next(os.walk(dodocs_dir))[:2]
     if dirnames:
