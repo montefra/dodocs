@@ -6,8 +6,11 @@ MIT Licence
 
 import colorama
 
-import dodocs.utils as dutils
 import dodocs.config as dconf
+import dodocs.logger as dlog
+import dodocs.utils as dutils
+
+from dodocs.mkdoc import mkprofile as mkp
 
 
 def build_cmd_arguments(subparser, formatter_class):
@@ -45,17 +48,17 @@ def build_doc(args):
     args : namespace
         parsed command line arguments
     """
-
     dodocs_dir = dutils.dodocs_directory()
+    log = dlog.getLogger()
 
     for name in args.name:
-        print(colorama.Fore.GREEN + "Building documentation for profile"
-              " {}".format(name))
+        log.info(colorama.Fore.GREEN + "Building documentation for profile"
+                 " '{}'".format(name))
         try:
             dconf.get_config(name)
         except dconf.DodocConfigError as e:
-            print(colorama.Fore.RED + str(e))
-            print(colorama.Fore.RED + "Profile {} won't be built")
+            log.error("Profile {} won't be built because \n" +
+                          str(e))
             continue
 
-
+    mkp.main(name, args)
