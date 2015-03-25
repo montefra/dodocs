@@ -8,7 +8,6 @@ import colorama
 
 import dodocs.config as dconf
 import dodocs.logger as dlog
-import dodocs.utils as dutils
 
 from dodocs.mkdoc import mkprofile as mkp
 
@@ -48,7 +47,6 @@ def build_doc(args):
     args : namespace
         parsed command line arguments
     """
-    dodocs_dir = dutils.dodocs_directory()
     log = dlog.getLogger()
 
     for name in args.name:
@@ -57,8 +55,8 @@ def build_doc(args):
         try:
             dconf.get_config(name)
         except dconf.DodocConfigError as e:
-            log.error("Profile {} won't be built because \n" +
-                          str(e))
+            log.error("Profile {} won't be built because \n".format(name) +
+                      str(e))
             continue
 
-    mkp.main(name, args)
+        mkp.main(name, args)
