@@ -9,6 +9,7 @@ import shutil
 
 import colorama
 
+import dodocs.logger as dlog
 import dodocs.utils as dutils
 
 
@@ -20,15 +21,26 @@ def remove(args):
     args : namespace
         parsed command line arguments
     """
+    log = dlog.getLogger()
     dodocs_dir = dutils.dodocs_directory()
 
     for name in args.name:
+        log.debug("Removing profile {}".format(name))
         profile_dir = os.path.join(dodocs_dir, name)
 
-        if os.path.islink(profile_dir):
-            realpath = os.path.realpath(profile_dir)
-            os.remove(profile_dir)
-            shutil.rmtree(realpath)
-        else:
-            shutil.rmtree(profile_dir)
-        print(colorama.Fore.GREEN + "profile '{}' removed".format(name))
+        if not os.path.exists(profile_dir):
+            log.warn("Profile {} does not exist".format(name))
+            continue
+
+        try:
+            if os.path.islink(profile_dir):
+                realpath = os.path.realpath(profile_dir)
+                os.remove(profile_dir)
+                shutil.rmtree(realpath)
+            else:
+                shutil.rmtree(profile_dir)
+        except FileNotFoundError:
+            msg = "The removal of profile {} failed".format(name)
+            log.error(msg, exc_info=True)
+            
+        log.info(colorama.Fore.GREEN + "profile '{}' removed".format(name))
