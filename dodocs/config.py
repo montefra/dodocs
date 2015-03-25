@@ -143,7 +143,7 @@ def check_edited(conf, profile):
 
 
 def check_sections(conf, profile):
-    """Check that the expected sections are present in the configuration file 
+    """Check that the expected sections are present in the configuration file
 
     Parameters
     ----------
@@ -161,3 +161,25 @@ def check_sections(conf, profile):
         if es not in conf.sections:
             msg = "[{p}] Mandatory section '{s}' is missing"
             raise DodocConfigError(msg.format(p=profile, s=es))
+
+
+def get_projects(profile):
+    """Get the list of projects for the given profile
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+
+    Returns
+    -------
+    projects : list of strings
+        name of the projects
+    """
+    conf = get_config(profile)
+    projects = conf.sections()
+    # remove the expected sections
+    for es in EXPECTED_SECTIONS:
+        projects.remove(es)
+
+    return projects
