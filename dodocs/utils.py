@@ -10,7 +10,12 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
+import contextlib
+
 import os
+
+src_directory = "src"
+"The sources of the projects goes here"
 
 
 def get_version(from_file=None):
@@ -58,3 +63,38 @@ def format_docstring(*args, **kwargs):
         func.__doc__ = doc
         return func
     return wrapper
+
+
+@contextlib.contextmanager
+def cd_project(profile, project):
+    """Context manager to ``cd`` into a project of a profile and return to the
+    original directory when finishing or upon error.
+
+    If the project directory does not exist already create it
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    project : string
+        name of the project
+
+    Yields
+    ------
+    project_dir : string
+        name of directory ``cd``ed into
+    """
+    cwd = os.getcwd()
+
+    project_dir = os.path.join(dodocs_directory(), profile, src_directory,
+                               project)
+
+    # if the directory does not exist create it
+    if not os.path.exists(project_dir):
+        os.makedirs(project_dir)
+
+    os.chdir(project_dir)
+    try:
+        yield os.path.abspath(project_dir)
+    finally:
+        os.chdir(cwd)
