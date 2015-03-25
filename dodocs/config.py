@@ -13,6 +13,7 @@ import os
 
 import colorama
 
+import dodocs.logger as dlog
 import dodocs.utils as du
 
 CONF_FILE = "dodocs_setup.cfg"
@@ -59,12 +60,20 @@ def get_config(profile):
     Returns
     -------
     conf : :class:`confp.ConfigParser` instance
+
+   Raises
+    ------
+    DodocConfigError
+        if the configuration file does not exist
     """
     try:
         return _config_dic[profile]
     except KeyError:
         conf = confp.ConfigParser()
         fname = os.path.join(du.dodocs_directory(), profile, CONF_FILE)
+        if not os.path.exists(fname):
+            raise DodocConfigError("The configuration file for profile {} does"
+                                   " not exist".format(profile))
         conf.read(fname)
 
         check_edited(conf, profile)
@@ -84,7 +93,13 @@ def check_version(conf, profile):
         configuration object
     profile : string
         name of the profile
+
+    Raises
+    ------
+    DodocConfigError
+        if the configuration file doesn't have the version option
     """
+    log = dlog.getLogger()
     try:
         conf_version = conf.get("general", "version")
         current_version = du.get_version()
@@ -93,15 +108,14 @@ def check_version(conf, profile):
                    " the one in the configuration file {dc}. Beware that the"
                    " built might fail."
                    )
-            print(colorama.Fore.YELLOW + msg.format(dv=current_version,
-                                                    dc=conf_version,
-                                                    p=profile))
+            log.warn(colorama.Fore.YELLOW + msg.format(dv=current_version,
+                                                       dc=conf_version,
+                                                       p=profile))
     except confp.NoOptionError:
-        msg = ("[{p}] The configuration file doesn't have a `version` entry."
+        msg = ("[{p}] The configuration file doesn't have a `version` option."
                " Are you sure that it is a `dodocs` configuration"
                )
-        print(colorama.Fore.RED + msg.format(p=profile))
-        raise
+        raise DodocConfigError(msg.format(p=profile))
 
 
 def check_edited(conf, profile):
