@@ -6,6 +6,7 @@ MIT Licence
 
 import dodocs.config as dconf
 import dodocs.logger as dlog
+import dodocs.utils as dutils
 
 
 def main(profile, args):
@@ -43,4 +44,6 @@ def build_project(profile, project, args):
     args : namespace
         parsed command line arguments
     """
-    pass
+    # create the directory
+    with dutils.cd_project(profile, project):
+        pass
