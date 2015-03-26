@@ -11,11 +11,16 @@ MIT Licence
 """
 
 import contextlib
-
+import errno
 import os
 
 src_directory = "src"
 "The sources of the projects goes here"
+
+
+class DodocsOSError(OSError):
+    """Rename :class:`OSError`"""
+    pass
 
 
 def get_version(from_file=None):
@@ -65,12 +70,8 @@ def format_docstring(*args, **kwargs):
     return wrapper
 
 
-@contextlib.contextmanager
-def cd_project(profile, project):
-    """Context manager to ``cd`` into a project of a profile and return to the
-    original directory when finishing or upon error.
-
-    If the project directory does not exist already create it
+def mkdir(profile, project):
+    """Create the project directory for the profile
 
     Parameters
     ----------
@@ -79,22 +80,44 @@ def cd_project(profile, project):
     project : string
         name of the project
 
-    Yields
+    Raises
     ------
-    project_dir : string
-        name of directory ``cd``ed into
+    DodocsOSError
+        if the directory(ies) could not be created
+    """
+    project_dir = os.path.join(dodocs_directory(), profile, src_directory,
+                               project)
+
+    # if the directory does not exist create it
+    try:
+        os.makedirs(project_dir)
+        is_new = True
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(project_dir):
+            pass
+        else:
+            raise DodocsOSError from e
+
+
+@contextlib.contextmanager
+def cd_project(profile, project):
+    """Context manager to ``cd`` into a project of a profile and return to the
+    original directory when finishing or upon error.
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    project : string
+        name of the project
     """
     cwd = os.getcwd()
 
     project_dir = os.path.join(dodocs_directory(), profile, src_directory,
                                project)
 
-    # if the directory does not exist create it
-    if not os.path.exists(project_dir):
-        os.makedirs(project_dir)
-
     os.chdir(project_dir)
     try:
-        yield os.path.abspath(project_dir)
+        yield
     finally:
         os.chdir(cwd)
