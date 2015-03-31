@@ -70,6 +70,24 @@ def format_docstring(*args, **kwargs):
     return wrapper
 
 
+def project_dir(profile, project):
+    """Name of the project directory
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    project : string
+        name of the project
+
+    Returns
+    -------
+    string
+        the name of the directory where the source of the project lives
+    """
+    return os.path.join(dodocs_directory(), profile, src_directory, project)
+
+
 def mkdir(profile, project):
     """Create the project directory for the profile
 
@@ -85,13 +103,11 @@ def mkdir(profile, project):
     DodocsOSError
         if the directory(ies) could not be created
     """
-    project_dir = os.path.join(dodocs_directory(), profile, src_directory,
-                               project)
+    project_d = project_dir(profile, project)
 
     # if the directory does not exist create it
     try:
         os.makedirs(project_dir)
-        is_new = True
     except OSError as e:
         if e.errno == errno.EEXIST and os.path.isdir(project_dir):
             pass
@@ -99,7 +115,6 @@ def mkdir(profile, project):
             raise DodocsOSError from e
 
 
-@contextlib.contextmanager
 def cd_project(profile, project):
     """Context manager to ``cd`` into a project of a profile and return to the
     original directory when finishing or upon error.
@@ -111,12 +126,22 @@ def cd_project(profile, project):
     project : string
         name of the project
     """
+    project_d = project_dir(profile, project)
+    return cd(project_d)
+
+
+@contextlib.contextmanager
+def cd(path):
+    """Context manager to ``cd`` into the given path
+
+    Parameters
+    ----------
+    path : string
+        directory where to cd to
+    """
     cwd = os.getcwd()
 
-    project_dir = os.path.join(dodocs_directory(), profile, src_directory,
-                               project)
-
-    os.chdir(project_dir)
+    os.chdir(path)
     try:
         yield
     finally:
