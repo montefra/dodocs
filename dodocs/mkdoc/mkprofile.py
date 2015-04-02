@@ -8,6 +8,8 @@ import dodocs.config as dconf
 import dodocs.logger as dlog
 import dodocs.utils as dutils
 
+from dodocs.mkdoc import vcs
+
 
 def main(profile, args):
     """Make the documentation for on project
@@ -23,7 +25,12 @@ def main(profile, args):
 
     for s in dconf.get_projects(profile):
         log.debug("building project %s", s)
-        build_project(profile, s, args)
+        try:
+            build_project(profile, s, args)
+        except Exception:
+            msg = "something bad happened"
+            log.exception(msg)
+            continue
 
 
 def build_project(profile, project, args):
@@ -44,6 +51,14 @@ def build_project(profile, project, args):
     args : namespace
         parsed command line arguments
     """
+    conf = dconf.get_config(profile)
+
     # create the directory
+    dutils.mkdir(profile, project)
+
+    # cd into it
     with dutils.cd_project(profile, project):
-        pass
+        vcs_type = conf.get(project, "vcs")
+        project_path = conf.get(project, "project_path")
+
+        vcs.get_or_update_source(vcs_type, project_path)

@@ -29,3 +29,16 @@ There are few options common to all projects:
 
 Project
 -------
+
+Each project is identified by its own section. The options withing each section
+are used to get the information to build the documentation
+
+Mandatory options
++++++++++++++++++
+
+* ``project_path``: where to get the source code
+
+Optional
+++++++++
+
+* ``vcs``: version control system. For now supports ``git``
