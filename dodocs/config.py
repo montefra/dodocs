@@ -45,6 +45,18 @@ def get_sample_cfg_file():
     return cfg_file
 
 
+def defaults():
+    """Default settings for the projects
+
+    Returns
+    -------
+    dictionary
+    """
+    default_dict = {"vcs": "git",
+                    }
+    return default_dict
+
+
 @du.format_docstring(CONF_FILE)
 def get_config(profile):
     """Returns the configuration for the given profile. If it doesn't exists,
@@ -69,7 +81,7 @@ def get_config(profile):
     try:
         return _config_dic[profile]
     except KeyError:
-        conf = confp.ConfigParser()
+        conf = confp.ConfigParser(defaults=defaults())
         fname = os.path.join(du.dodocs_directory(), profile, CONF_FILE)
         if not os.path.exists(fname):
             raise DodocConfigError("The configuration file for profile {} does"
