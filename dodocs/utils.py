@@ -107,9 +107,9 @@ def mkdir(profile, project):
 
     # if the directory does not exist create it
     try:
-        os.makedirs(project_dir)
+        os.makedirs(project_d)
     except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(project_dir):
+        if e.errno == errno.EEXIST and os.path.isdir(project_d):
             pass
         else:
             raise DodocsOSError from e
