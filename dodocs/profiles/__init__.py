@@ -11,6 +11,7 @@ from dodocs import utils
 from dodocs.profiles.plist import plist
 from dodocs.profiles.create import create
 from dodocs.profiles.remove import remove
+from dodocs.profiles.edit import edit
 
 
 def profiles_cmd_arguments(subparser, formatter_class):
@@ -52,8 +53,8 @@ def profiles_cmd_arguments(subparser, formatter_class):
                      """
     description = description.format(home=utils.dodocs_directory())
     profile_create = profile_cmd.add_parser("create", description=description,
-                                            help="""Create a new profile""",
-                                            aliases=['new'])
+                                            help="""Create one or more new
+                                            profiles""", aliases=['new'])
 
     profile_create.add_argument('name', nargs="+", help='''Name(s) of the
                                 profile(s) to create''')
@@ -68,14 +69,22 @@ def profiles_cmd_arguments(subparser, formatter_class):
     profile_create.set_defaults(func=create)
 
     # remove profiles
-    description = """Remove existing profiles from the '{home}' directory.  """
+    description = """Remove existing profiles from the '{home}' directory."""
     description = description.format(home=utils.dodocs_directory())
     profile_rm = profile_cmd.add_parser("remove", description=description,
-                                        help="""Create a new profile""",
+                                        help="""Remove one or more profiles""",
                                         aliases=["rm"])
 
     profile_rm.add_argument('name', nargs="+", help='''Name(s) of the
                                 profile(s) to remove''')
     profile_rm.set_defaults(func=remove)
+
+    # edit a profile
+    description = """Open the profile configuration file in an editor"""
+    profile_rm = profile_cmd.add_parser("edit", description=description,
+                                        help=description)
+
+    profile_rm.add_argument('name', help='''Name of the profile to edit''')
+    profile_rm.set_defaults(func=edit)
 
     return subparser
