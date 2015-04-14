@@ -14,8 +14,10 @@ import contextlib
 import errno
 import os
 
-src_directory = "src"
+SRC_DIRECTORY = "src"
 "The sources of the projects goes here"
+VENV_DIRECTORY = "src"
+"The virtual environments of the profiles go here"
 
 
 class DodocsOSError(OSError):
@@ -70,6 +72,22 @@ def format_docstring(*args, **kwargs):
     return wrapper
 
 
+def profile_dir(profile):
+    """Name of the profile directory
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+
+    Returns
+    -------
+    string
+        the name of the directory of the project
+    """
+    return os.path.join(dodocs_directory(), profile)
+
+
 def project_dir(profile, project):
     """Name of the project directory
 
@@ -85,10 +103,28 @@ def project_dir(profile, project):
     string
         the name of the directory where the source of the project lives
     """
-    return os.path.join(dodocs_directory(), profile, src_directory, project)
+    return os.path.join(profile_dir(profile), SRC_DIRECTORY, project)
 
 
-def mkdir(profile, project):
+def venv_dir(profile, language):
+    """Name of the virtual environment
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    language : string
+        name of python version to use (e.g. ``python3``)
+
+    Returns
+    -------
+    string
+        the name of the directory where the venv is created
+    """
+    return os.path.join(profile_dir(profile), VENV_DIRECTORY, language)
+
+
+def mk_project(profile, project):
     """Create the project directory for the profile
 
     Parameters
