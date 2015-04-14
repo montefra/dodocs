@@ -22,11 +22,10 @@ def remove(args):
         parsed command line arguments
     """
     log = dlog.getLogger()
-    dodocs_dir = dutils.dodocs_directory()
 
     for name in args.name:
         log.debug("Removing profile {}".format(name))
-        profile_dir = os.path.join(dodocs_dir, name)
+        profile_dir = dutils.profile_dir(name)
 
         if not os.path.exists(profile_dir):
             log.warn("Profile {} does not exist".format(name))
@@ -42,5 +41,5 @@ def remove(args):
         except FileNotFoundError:
             msg = "The removal of profile {} failed".format(name)
             log.error(msg, exc_info=True)
-            
+
         log.info(colorama.Fore.GREEN + "profile '{}' removed".format(name))
