@@ -187,7 +187,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         self.install_script(context, 'pip', url)
 
 
-def build_venv(options):
+def build_venv():
     """Create the virtual environments
 
     Parameters
@@ -198,8 +198,8 @@ def build_venv(options):
 
     if options.upgrade and options.clear:
         raise ValueError('you cannot supply --upgrade and --clear together.')
-    builder = ExtendedEnvBuilder(system_site_packages=options.system_site,
-                                 clear=options.clear,
+    builder = ExtendedEnvBuilder(system_site_packages=False,
+                                 clear=False,
                                  symlinks=options.symlinks,
                                  upgrade=options.upgrade,
                                  nodist=options.nodist, nopip=options.nopip,
