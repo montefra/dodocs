@@ -26,8 +26,13 @@ def edit(args):
     log.debug("opening configuration file for profile {} for"
               " editing".format(args.name))
 
-    dodocs_dir = utils.dodocs_directory()
-    config_file = os.path.join(dodocs_dir, args.name, dconf.CONF_FILE)
+    profile_dir = utils.profile_dir(args.name)
+
+    if not os.path.exists(profile_dir):
+        log.warn("Profile {} does not exist. Bye".format(args.name))
+        return
+
+    config_file = os.path.join(profile_dir, dconf.CONF_FILE)
 
     # this part is taken without shame from the web
     if os.name == 'posix':
