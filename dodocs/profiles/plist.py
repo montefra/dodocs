@@ -38,7 +38,7 @@ def plist(args):
                     msg += "\n    + {}".format(project)
             except dconf.DodocConfigError as e:
                 msg += ("\n    + " + colorama.Fore.RED + "there is a problem"
-                        "with the configuration file" + colorama.Fore.RESET)
+                        " with the configuration file" + colorama.Fore.RESET)
                 log.error(e)
 
         print(msg)
