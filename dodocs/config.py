@@ -53,6 +53,7 @@ def defaults():
     dictionary
     """
     default_dict = {"vcs": "git",
+                    "language": "python3",
                     }
     return default_dict
 
