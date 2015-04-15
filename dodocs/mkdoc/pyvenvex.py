@@ -13,7 +13,6 @@ MIT Licence
 """
 
 import os
-# import os.path
 from subprocess import Popen, PIPE
 import sys
 from threading import Thread
@@ -21,9 +20,46 @@ from urllib.parse import urlparse
 from urllib.request import urlretrieve
 import venv
 
+import dodocs.utils as dutils
+import dodocs.logger as dlog
 
 if sys.version_info < (3, 3) or not hasattr(sys, 'base_prefix'):
     raise ValueError('This script is only for use with Python 3.3 or later')
+
+
+class VenvError(RuntimeError):
+    """Error raised when something goes wrong activating the virtualenv"""
+
+
+def enable_venv(profile, pyversion):
+    """Enable or create and enable the virtual environment for the given python
+    version.
+
+    The virtual environments is located into a "venv" subdirectory in the
+    project
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    pyversion : string
+        name of the python exe (e.g. ``python3``)
+    """
+    log = dlog.getLogger()
+
+    venv_dir = dutils.venv_dir(profile, pyversion)
+    if not os.path.exists(venv_dir):
+        log.debug("Create virtualenv '%s'", venv_dir)
+        build_venv(venv_dir)
+
+    activate = Popen(['source', os.path.join(venv_dir, 'bin', 'activate')],
+                     stdout=PIPE, stderr=PIPE)
+    stdout, stderr = activate.communicate()
+    if stderr or activate.returncode > 0:
+        log.error(stderr or "Something badly failed when trying to activate"
+                  " the virtual env")
+        raise VenvError("Virtual environment activation failed")
+    log.debug("virtualenv '%s' activated", venv_dir)
 
 
 class ExtendedEnvBuilder(venv.EnvBuilder):
@@ -187,22 +223,16 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         self.install_script(context, 'pip', url)
 
 
-def build_venv():
+def build_venv(venv_dir):
     """Create the virtual environments
 
     Parameters
     ----------
-    options : namespace
-        options to use when creating the virtual environment
+    venv_dir : string
+        name of the directory of the virtual environment
     """
 
-    if options.upgrade and options.clear:
-        raise ValueError('you cannot supply --upgrade and --clear together.')
-    builder = ExtendedEnvBuilder(system_site_packages=False,
-                                 clear=False,
-                                 symlinks=options.symlinks,
-                                 upgrade=options.upgrade,
-                                 nodist=options.nodist, nopip=options.nopip,
-                                 verbose=options.verbose)
-    for d in options.dirs:
-        builder.create(d)
+    builder = ExtendedEnvBuilder(system_site_packages=False, clear=False,
+                                 symlinks=False, upgrade=False, nodist=False,
+                                 nopip=False, verbose=False)
+    builder.create(venv_dir)
