@@ -16,7 +16,7 @@ import os
 
 SRC_DIRECTORY = "src"
 "The sources of the projects goes here"
-VENV_DIRECTORY = "src"
+VENV_DIRECTORY = "venvs"
 "The virtual environments of the profiles go here"
 
 
