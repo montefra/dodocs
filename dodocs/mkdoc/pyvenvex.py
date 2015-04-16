@@ -13,9 +13,11 @@ MIT Licence
 """
 
 import os
-from subprocess import Popen, PIPE
+import shutil
+import subprocess as sp
 import sys
 from threading import Thread
+from urllib.error import URLError
 from urllib.parse import urlparse
 from urllib.request import urlretrieve
 import venv
@@ -28,15 +30,29 @@ if sys.version_info < (3, 3) or not hasattr(sys, 'base_prefix'):
 
 
 class VenvError(RuntimeError):
-    """Error raised when something goes wrong activating the virtualenv"""
+    """Error raised when something goes wrong with the virtualenv"""
 
 
-def enable_venv(profile, pyversion):
-    """Enable or create and enable the virtual environment for the given python
-    version.
+def bin_dir(venv_dir):
+    """Virtual environment bin directory
 
-    The virtual environments is located into a "venv" subdirectory in the
-    project
+    Parameters
+    ----------
+    venv_dir : string
+        name of the directory in which the virtual environment should be
+        created
+
+    Returns
+    -------
+    string
+        bin directory
+    """
+    return os.path.join(venv_dir, 'bin')
+
+
+def venv_bin(profile, pyversion):
+    """Returns the path to the bin directory of the virtual environment for the
+    given python version. Create it if necessary
 
     Parameters
     ----------
@@ -44,22 +60,46 @@ def enable_venv(profile, pyversion):
         name of the profile
     pyversion : string
         name of the python exe (e.g. ``python3``)
+
+    Returns
+    -------
+    string
+        bin directory
+    """
+    venv_dir = dutils.venv_dir(profile, pyversion)
+    bindir = bin_dir(venv_dir)
+    if not os.path.exists(venv_dir):
+        create_venv(venv_dir)
+
+    return bindir
+
+
+@dutils.format_docstring(dutils.VENV_DIRECTORY)
+def create_venv(venv_dir):
+    """Create the virtual environment for the given python version and install
+    sphinx in it.
+
+    The virtual environment is located into the "{0}" subdirectory in the
+    project.
+
+    Parameters
+    ----------
+    venv_dir : string
+        name of the directory in which the virtual environment should be
+        created
     """
     log = dlog.getLogger()
 
-    venv_dir = dutils.venv_dir(profile, pyversion)
-    if not os.path.exists(venv_dir):
-        log.debug("Create virtualenv '%s'", venv_dir)
+    try:
         build_venv(venv_dir)
-
-    activate = Popen(['source', os.path.join(venv_dir, 'bin', 'activate')],
-                     stdout=PIPE, stderr=PIPE)
-    stdout, stderr = activate.communicate()
-    if stderr or activate.returncode > 0:
-        log.error(stderr or "Something badly failed when trying to activate"
-                  " the virtual env")
-        raise VenvError("Virtual environment activation failed")
-    log.debug("virtualenv '%s' activated", venv_dir)
+        log.debug("Virtualenv '%s' created", venv_dir)
+    except URLError as e:
+        log.warning("The Virtualenv has been created but it couldn't fetch"
+                    " pip and setuptools from the network. As pip is"
+                    " needed for the installation of python packages, it"
+                    " gets removed")
+        # shutil.rmtree(venv_dir)
+        raise VenvError("Virtual environment creation failed") from e
 
 
 class ExtendedEnvBuilder(venv.EnvBuilder):
@@ -175,7 +215,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
             sys.stderr.flush()
         # Install in the env
         args = [context.env_exe, fn]
-        p = Popen(args, stdout=PIPE, stderr=PIPE, cwd=binpath)
+        p = sp.Popen(args, stdout=sp.PIPE, stderr=sp.PIPE, cwd=binpath)
         t1 = Thread(target=self.reader, args=(p.stdout, 'stdout'))
         t1.start()
         t2 = Thread(target=self.reader, args=(p.stderr, 'stderr'))
@@ -231,8 +271,24 @@ def build_venv(venv_dir):
     venv_dir : string
         name of the directory of the virtual environment
     """
+    log = dlog.getLogger()
 
     builder = ExtendedEnvBuilder(system_site_packages=False, clear=False,
                                  symlinks=False, upgrade=False, nodist=False,
-                                 nopip=False, verbose=False)
+                                 nopip=False, verbose=True)
     builder.create(venv_dir)
+    log.debug("Installing sphinx")
+    pip = os.path.join(bin_dir(venv_dir), 'pip')
+    cmd = [pip, 'install', 'sphinx']
+    try:
+        p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
+        stdout, stderr = p.communicate()
+        if stdout:
+            log.debug(stdout)
+        if stderr:
+            log.error(stderr)
+        else:
+            log.debug("Sphinx installed")
+    except FileNotFoundError:
+        log.error("The installation of 'sphinx' failed because '%s' could not"
+                  " be found ", pip)
