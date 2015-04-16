@@ -16,6 +16,7 @@ How to use it
 .. toctree::
     :maxdepth: 2
 
+    install
     usage
     config
 
