@@ -4,6 +4,7 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
+import os
 import sys
 
 import colorama
@@ -39,7 +40,7 @@ def main(argv=None):
         else:
             # in the other cases suggest to run -h
             msg = (colorama.Fore.RED + "Please provide a valid command.\n"
-                   "Type\n  " + sys.argv[0])
+                   "Type\n  " + os.path.split(sys.argv[0])[1])
             if args.subparser_name is not None:
                 msg += " " + args.subparser_name
             msg += ' -h'
