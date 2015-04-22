@@ -5,6 +5,7 @@ MIT Licence
 """
 
 import os
+import subprocess as sp
 
 import dodocs.config as dconf
 import dodocs.logger as dlog
@@ -75,12 +76,32 @@ def build_project(profile, project, args):
         language = conf.get(project, "language").lower()
         if language == "python3":
             venv_bin = pyvenvex.venv_bin(profile, language)
+            log.debug("virtualenv bin directory '%s'", venv_bin)
         else:
             raise ValueError("for now I don't know with language"
                              " {}".format(language))
 
         # if it's any python, install it in developer mode
-        if language.find("python"):
+        py_install = conf.get(project, "py-install")
+        log.debug("install %s? %s", project, py_install)
+        if ("python" in language and
+                py_install.lower() not in ['no', 'none']):
             pip = os.path.join(venv_bin, 'pip')
+            cmd = [pip, 'install', '-e']
+            if py_install.lower() == 'yes':
+                cmd += ['.']
+            else:
+                cmd += ['.[{}]'.format(py_install)]
+            log.debug("running '%s'", " ".join(cmd))
+
+            p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE,
+                         universal_newlines=True)
+            stdout, stderr = p.communicate()
+            if stdout:
+                log.debug(str(stdout).replace('\n\n', '\n'))
+            if stderr:
+                log.error(stderr)
+            if p.returncode > 0:
+                log.error("pip install return code '%d'", p.returncode)
 
         # build the documentation
