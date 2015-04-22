@@ -112,6 +112,7 @@ setup(
     author_email="franz.bergesund@gmail.com",
     description="Heterogeneous collection of HETDEX-related functionalities",
     long_description=open("README.md").read(),
+    license="The MIT License (MIT)\n Copyright (c) 2015 Francesco Montesano",
 
     # custom install and build
     cmdclass={
