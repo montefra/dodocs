@@ -12,7 +12,7 @@ import subprocess as sp
 
 import dodocs.mkdoc.builders.base_builder as bb
 from dodocs.mkdoc.builders import register_builder
-from dodocs.mkdoc import pyvenvex
+from dodocs.mkdoc.builders import pyvenvex
 
 
 class Py3BuilderError(RuntimeError):
