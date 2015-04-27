@@ -90,7 +90,7 @@ def extras_require():
     req_dic = {'doc': ['sphinx', 'numpydoc', 'alabaster', ],
                }
 
-    req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild', ]
+    req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild>=0.5.2', ]
 
     return req_dic
 
