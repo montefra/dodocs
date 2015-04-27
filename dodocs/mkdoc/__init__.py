@@ -49,6 +49,10 @@ def build_doc(args):
     """
     log = dlog.getLogger()
 
+    # initialize the builders
+    from dodocs.mkdoc.builders import init
+    init()
+
     for name in args.name:
         log.info(colorama.Fore.GREEN + "Building documentation for profile"
                  " '{}'".format(name))
