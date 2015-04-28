@@ -7,7 +7,6 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-import os
 import subprocess as sp
 
 import dodocs.mkdoc.builders.base_builder as bb
@@ -50,8 +49,8 @@ class Python3Builder(bb.BaseBuilder):
             what to install; if ``yes`` just install, if any other string
             interpret it as optional dependences
         """
-        pip = os.path.join(self._venv_bin, 'pip')
-        cmd = [pip, 'install', '-e']
+        pip = self._venv_bin / 'pip'
+        cmd = [str(pip), 'install', '-e']
         if what_install.lower() == 'yes':
             cmd += ['.']
         else:
@@ -75,7 +74,7 @@ class Python3Builder(bb.BaseBuilder):
 
     @property
     def build_cmd(self):
-        cmd = ['sphinx-build']
+        cmd = ['ls']  # ['sphinx-build']
         return cmd
 
 

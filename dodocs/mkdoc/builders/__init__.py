@@ -6,7 +6,6 @@ Initialise and return the appropriate builder for the given language.
 
 import importlib
 from pathlib import Path
-import sys
 
 # a builder for every language; key: language; value: builder class
 _builders = {}

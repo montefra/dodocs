@@ -9,7 +9,7 @@ MIT Licence
 """
 
 import configparser as confp
-import os
+from pathlib import Path
 
 import colorama
 
@@ -40,8 +40,8 @@ def get_sample_cfg_file():
     cfg_file: string
         absolute path of the sample configuration file
     """
-    path = os.path.split(os.path.abspath(__file__))[0]
-    cfg_file = os.path.join(path, "dodocs_data", CONF_FILE)
+    this_file_path = Path(__file__).parent
+    cfg_file = this_file_path / "dodocs_data" / CONF_FILE
     return cfg_file
 
 
@@ -84,11 +84,11 @@ def get_config(profile):
         return _config_dic[profile]
     except KeyError:
         conf = confp.ConfigParser(defaults=defaults())
-        fname = os.path.join(du.dodocs_directory(), profile, CONF_FILE)
-        if not os.path.exists(fname):
+        fname = du.dodocs_directory() / profile / CONF_FILE
+        if not fname.exists():
             raise DodocConfigError("The configuration file for profile {} does"
                                    " not exist".format(profile))
-        conf.read(fname)
+        conf.read(str(fname))
 
         check_edited(conf, profile)
         check_version(conf, profile)

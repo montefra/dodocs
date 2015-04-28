@@ -43,7 +43,7 @@ def bin_dir(venv_dir):
     string
         bin directory
     """
-    return os.path.join(venv_dir, 'bin')
+    return venv_dir / 'bin'
 
 
 def venv_bin(profile, pyversion):
@@ -64,7 +64,7 @@ def venv_bin(profile, pyversion):
     """
     venv_dir = dutils.venv_dir(profile, pyversion)
     bindir = bin_dir(venv_dir)
-    if not os.path.exists(venv_dir):
+    if not venv_dir.exists():
         create_venv(venv_dir)
 
     return bindir

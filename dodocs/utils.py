@@ -11,8 +11,8 @@ MIT Licence
 """
 
 import contextlib
-import errno
 import os
+from pathlib import Path
 
 SRC_DIRECTORY = "src"
 "The sources of the projects goes here"
@@ -33,7 +33,7 @@ def get_version(from_file=None):
 
     Parameters
     ----------
-    from_file: string, optional
+    from_file : string, optional
         scan from the string ``__version__`` in the given file
     """
     if from_file is None:
@@ -53,16 +53,31 @@ def dodocs_directory():
 
     Returns
     -------
-    dodocs_dir: string
+    dodocs_dir : :class:`Path` instance
         dodocs directory
     """
-    home = os.path.expanduser('~')
-    dodocs_dir = os.path.join(home, '.dodocs')
+    home = Path(os.path.expanduser('~'))
+    dodocs_dir = home / '.dodocs'
     return dodocs_dir
 
 
 def format_docstring(*args, **kwargs):
     """Decorator to format the docstring using :func:`string.format` syntax
+
+    Examples
+    --------
+    >>> @format_docstring('test', 'work')
+    >>> def foo():
+    >>>     'This is a {} and should {}'
+    >>>     pass
+    >>> print(foo.__doc__)
+    this is a test and should work
+    >>> @format_docstring(t='test', w='work')
+    >>> def foo():
+    >>>     'This is an other {t} and should {w}'
+    >>>     pass
+    >>> print(foo.__doc__)
+    this is an other test and should work
     """
     def wrapper(func):
         doc = func.__doc__
@@ -82,10 +97,10 @@ def profile_dir(profile):
 
     Returns
     -------
-    string
+    :class:`Path` instance
         the name of the directory of the project
     """
-    return os.path.join(dodocs_directory(), profile)
+    return dodocs_directory() / profile
 
 
 def project_dir(profile, project):
@@ -100,10 +115,10 @@ def project_dir(profile, project):
 
     Returns
     -------
-    string
+    :class:`Path` instance
         the name of the directory where the source of the project lives
     """
-    return os.path.join(profile_dir(profile), SRC_DIRECTORY, project)
+    return profile_dir(profile) / SRC_DIRECTORY / project
 
 
 def venv_dir(profile, language):
@@ -118,10 +133,10 @@ def venv_dir(profile, language):
 
     Returns
     -------
-    string
+    :class:`Path` instance
         the name of the directory where the venv is created
     """
-    return os.path.join(profile_dir(profile), VENV_DIRECTORY, language)
+    return profile_dir(profile) / VENV_DIRECTORY / language
 
 
 def mk_project(profile, project):
@@ -143,12 +158,11 @@ def mk_project(profile, project):
 
     # if the directory does not exist create it
     try:
-        os.makedirs(project_d)
-    except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(project_d):
-            pass
-        else:
-            raise DodocsOSError from e
+        project_d.mkdir(parents=True)
+    except FileExistsError:
+        pass  # don't remake the directory
+    except FileNotFoundError as e:
+        raise DodocsOSError from e
 
 
 def cd_project(profile, project):
@@ -177,7 +191,7 @@ def cd(path):
     """
     cwd = os.getcwd()
 
-    os.chdir(path)
+    os.chdir(str(path))
     try:
         yield
     finally:
