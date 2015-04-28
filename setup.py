@@ -5,8 +5,8 @@ Copyright (c) 2015 Francesco Montesano
 import os
 import sys
 
-if sys.version_info < (3, 3):
-    sys.exit("This code requires python 3.3 or older")
+if sys.version_info < (3, 4):
+    sys.exit("This code requires python 3.4 or older")
 
 from setuptools import setup, find_packages
 from setuptools.command.develop import develop
@@ -18,16 +18,6 @@ dd = os.path.join(os.path.split(__file__)[0], 'dodocs')
 sys.path.insert(0, dd)
 from utils import get_version, dodocs_directory
 sys.path.pop(0)
-
-
-if sys.version_info < (3, 4):
-    msg = ('This code relies on the venv module as implemented in python >='
-           ' 3.4. If there is interest, should be possible to add support for'
-           ' the ``virtualenv`` package in order to create virtual'
-           ' environments using older versions of python\n'
-           'Anyway remember that the code itself runs on python 3 only')
-    sys.exit(msg)
-
 
 # Custom install and develop. Create the directory ``.dodocs`` after
 # installation is done
