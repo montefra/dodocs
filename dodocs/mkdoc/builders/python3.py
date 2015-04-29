@@ -87,8 +87,7 @@ class Python3Builder(bb.BaseBuilder):
                    " within `doc` or `docs` directory")
             raise Py3BuilderError(msg)
 
-        doc_dir = source_dir.parent
-        build_dir = doc_dir / "build"
+        build_dir = dutils.build_dir(self.profile, self.project)
         cmd = ['sphinx-build', '-b', 'html', '-d', str(build_dir / 'doctrees'),
                str(source_dir), str(build_dir / 'html')]
         return cmd

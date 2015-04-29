@@ -18,6 +18,8 @@ SRC_DIRECTORY = "src"
 "The sources of the projects goes here"
 VENV_DIRECTORY = "venvs"
 "The virtual environments of the profiles go here"
+BUILD_DIRECTORY = "temp"
+"Temporary documentation builds of the profiles go here"
 
 
 class DodocsOSError(OSError):
@@ -137,6 +139,25 @@ def venv_dir(profile, language):
         the name of the directory where the venv is created
     """
     return profile_dir(profile) / VENV_DIRECTORY / language
+
+
+def build_dir(profile, project):
+    """Name of the directory where to build the documentation. It's removed
+    after the documentation has been moved to its target directory
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    project : string
+        name of the project
+
+    Returns
+    -------
+    :class:`Path` instance
+        the name of the directory where the source of the project lives
+    """
+    return profile_dir(profile) / BUILD_DIRECTORY / project
 
 
 def mk_project(profile, project):
