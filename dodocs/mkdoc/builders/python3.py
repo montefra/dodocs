@@ -7,7 +7,10 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
+from pathlib import Path
 import subprocess as sp
+
+import dodocs.utils as dutils
 
 import dodocs.mkdoc.builders.base_builder as bb
 from dodocs.mkdoc.builders import register_builder
@@ -74,7 +77,20 @@ class Python3Builder(bb.BaseBuilder):
 
     @property
     def build_cmd(self):
-        cmd = ['ls']  # ['sphinx-build']
+        project_dir = dutils.project_dir(self.profile, self.project)
+        source_dirs = project_dir.glob('doc*/**/*source*/conf.py')
+        try:
+            source_dir = next(source_dirs).parent
+        except StopIteration:
+            msg = ("The documentation is expected to be found in a `*source*`"
+                   " directory, containing a `conf.py` file, at any depth"
+                   " within `doc` or `docs` directory")
+            raise Py3BuilderError(msg)
+
+        doc_dir = source_dir.parent
+        build_dir = doc_dir / "build"
+        cmd = ['sphinx-build', '-b', 'html', '-d', str(build_dir / 'doctrees'),
+               str(source_dir), str(build_dir / 'html')]
         return cmd
 
 

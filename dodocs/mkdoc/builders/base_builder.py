@@ -74,6 +74,7 @@ class BaseBuilder(metaclass=abc.ABCMeta):
 
         Execute the :attr:`build_cmd` in a shell and log the output
         """
+        self.log.debug("running '%s'", " ".join(self.build_cmd))
         p = sp.Popen(self.build_cmd, stdout=sp.PIPE, stderr=sp.PIPE,
                      universal_newlines=True)
         stdout, stderr = p.communicate()

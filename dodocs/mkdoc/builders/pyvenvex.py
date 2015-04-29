@@ -147,12 +147,13 @@ def build_venv(venv_dir):
     log = dlog.getLogger()
 
     builder = VenvInVenvBuilder(with_pip=True)
-    builder.create(venv_dir)
+    builder.create(str(venv_dir))
     log.debug("Installing sphinx")
-    pip = os.path.join(bin_dir(venv_dir), 'pip')
-    cmd = [pip, 'install', 'sphinx']
+    pip = bin_dir(venv_dir) / 'pip'
+    cmd = [str(pip), 'install', 'sphinx']
     try:
-        p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
+        p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE,
+                     universal_newlines=True)
         stdout, stderr = p.communicate()
         if p.returncode == 0:
             if stdout:
@@ -167,7 +168,7 @@ def build_venv(venv_dir):
                 log.error(stderr)
 
             log.info("Removing '%s' to avoid future problems", venv_dir)
-            shutil.rmtree(venv_dir)
+            shutil.rmtree(str(venv_dir))
             raise VenvError("The installation of sphinx failed. Are you"
                             " connected to the internet?")
 
