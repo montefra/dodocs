@@ -3,10 +3,12 @@
 Copyright (c) 2015 Francesco Montesano
 """
 import os
+try:
+    from pathlib import Path
+except ImportError:
+    sys.exit("This code requires ``pathlib`` which is shipped with python 3.4"
+             " or older")
 import sys
-
-if sys.version_info < (3, 4):
-    sys.exit("This code requires python 3.4 or older")
 
 from setuptools import setup, find_packages
 from setuptools.command.develop import develop
@@ -14,10 +16,11 @@ from setuptools.command.install import install
 
 # import only dodocs.utils without relying on it to be in the package to avoid
 # problems with requirements
-dd = os.path.join(os.path.split(__file__)[0], 'dodocs')
-sys.path.insert(0, dd)
+dd = Path(__file__).parent / 'dodocs'
+sys.path.insert(0, str(dd))
 from utils import get_version, dodocs_directory
 sys.path.pop(0)
+
 
 # Custom install and develop. Create the directory ``.dodocs`` after
 # installation is done
@@ -33,9 +36,9 @@ def wrap_run(command_subclass):
         # check if the dodocs_dir exists or not
         dodocs_dir = dodocs_directory()
         is_new, is_dir = False, False
-        if not os.path.exists(dodocs_dir):
+        if not dodocs_dir.exists():
             is_new = True
-        elif os.path.isdir(dodocs_dir):
+        elif dodocs_dir.is_dir():
             is_dir = True
         else:
             msg = "'{n}' already exists and it's not a directory. 'dodocs'"
@@ -50,7 +53,7 @@ def wrap_run(command_subclass):
 
         # create the directory or use the old one
         if is_new:
-            os.mkdir(dodocs_dir)
+            dodocs_dir.mkdir()
             print("\n'{}' directory created\n".format(dodocs_dir))
         elif is_dir:
             print("\n'{}' already exists: I'm going to use it,"
