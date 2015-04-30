@@ -25,20 +25,21 @@ def plist(args):
 
     log.debug("Listing profiles")
     dodocs_dir = utils.dodocs_directory()
-    dirpath, dirnames = next(os.walk(dodocs_dir))[:2]
+    dirpath, dirnames = next(os.walk(str(dodocs_dir)))[:2]
     if dirnames:
         msg = colorama.Fore.GREEN + "Available profiles:" + colorama.Fore.RESET
         for d in dirnames:
-            profile_dir = os.path.join(dodocs_dir, d)
+            profile_dir = dodocs_dir / d
             msg += "\n  * {}".format(d)
-            if os.path.islink(profile_dir):
-                msg += " (-> {})".format(os.path.realpath(profile_dir))
+            if profile_dir.is_symlink():
+                msg += " (-> {})".format(profile_dir.resolve())
             try:
                 for project in dconf.get_projects(d):
                     msg += "\n    + {}".format(project)
             except dconf.DodocConfigError as e:
                 msg += ("\n    + " + colorama.Fore.RED + "there is a problem"
-                        " with the configuration file" + colorama.Fore.RESET)
+                        " with the configuration file. See the above error"
+                        " log." + colorama.Fore.RESET)
                 log.error(e)
 
         print(msg)
