@@ -67,3 +67,7 @@ def build_project(profile, project, args):
 
         # build the documentation
         builder.build_doc()
+        # move it
+        builder.move_doc()
+        # remove the build directory
+        builder.clear_tmp()

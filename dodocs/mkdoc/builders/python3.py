@@ -7,7 +7,7 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-from pathlib import Path
+import shutil
 import subprocess as sp
 
 import dodocs.utils as dutils
@@ -91,6 +91,11 @@ class Python3Builder(bb.BaseBuilder):
         cmd = ['sphinx-build', '-b', 'html', '-d', str(build_dir / 'doctrees'),
                str(source_dir), str(build_dir / 'html')]
         return cmd
+
+    def clear_tmp(self):
+        """Clear the temporary directory where the documentation has been built
+        """
+        shutil.rmtree(str(dutils.build_dir(self.profile, self.project)))
 
 
 register_builder('python3', Python3Builder)
