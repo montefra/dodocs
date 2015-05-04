@@ -14,7 +14,7 @@ from dodocs import utils
 
 
 def edit(args):
-    """Create a new profile and copy the configuration file in it
+    """Edit the configuration file(s)
 
     Parameters
     ----------
@@ -26,21 +26,22 @@ def edit(args):
     log.debug("opening configuration file for profile {} for"
               " editing".format(args.name))
 
-    profile_dir = utils.profile_dir(args.name)
+    for profile in args.name:
+        profile_dir = utils.profile_dir(profile)
 
-    if not os.path.exists(profile_dir):
-        log.warn("Profile {} does not exist. Bye".format(args.name))
-        return
+        if not profile_dir.exists():
+            log.warn("Profile '{}' does not exist. Bye".format(profile))
+            return
 
-    config_file = os.path.join(profile_dir, dconf.CONF_FILE)
+        config_file = str(profile_dir / dconf.CONF_FILE)
 
-    # this part is taken without shame from the web
-    if os.name == 'posix':
-        if "EDITOR" in os.environ:
-            sp.call([os.environ["EDITOR"], config_file])
-        else:
-            sp.call(["xdg-open", config_file])
-    elif sys.platform.startswith('darwin'):
-        sp.call(["open", config_file])
-    elif os.name == 'nt':
-        os.startfile(config_file)
+        # this part is taken without shame from the web
+        if os.name == 'posix':
+            if "EDITOR" in os.environ:
+                sp.call([os.environ["EDITOR"], config_file])
+            else:
+                sp.call(["xdg-open", config_file])
+        elif sys.platform.startswith('darwin'):
+            sp.call(["open", config_file])
+        elif os.name == 'nt':
+            os.startfile(config_file)

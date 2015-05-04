@@ -84,7 +84,8 @@ def profiles_cmd_arguments(subparser, formatter_class):
     profile_rm = profile_cmd.add_parser("edit", description=description,
                                         help=description)
 
-    profile_rm.add_argument('name', help='''Name of the profile to edit''')
+    profile_rm.add_argument('name', nargs="+",
+                            help='''Name of the profile to edit''')
     profile_rm.set_defaults(func=edit)
 
     return subparser
