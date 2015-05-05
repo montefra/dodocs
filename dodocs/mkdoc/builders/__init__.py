@@ -12,7 +12,12 @@ _builders = {}
 
 
 def init():
-    # import all the modules in the builders directory to register them
+    """Import all the modules in the builders directory to register the available
+    handlers.
+
+    Must be called before using any of the handlers, e.g. in
+    :func:`dodocs.mkdocs.build_doc`
+    """
     builders_dir = Path(__file__).parent
     for to_register in builders_dir.glob('*py'):
         if to_register.name not in ['__init__.py', 'base_builder.py']:
