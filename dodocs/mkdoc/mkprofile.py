@@ -59,15 +59,11 @@ def build_project(profile, project, args):
     # create the directory
     dutils.mk_project(profile, project)
 
-    # cd into it
-    with dutils.cd_project(profile, project):
-        log.debug("cd'ed into the project '%s' directory", project)
+    builder = builders.picker(profile, project, conf, log)
 
-        builder = builders.picker(profile, project, conf, log)
-
-        # build the documentation
-        builder.build_doc()
-        # move it
-        builder.move_doc()
-        # remove the build directory
-        builder.clear_tmp()
+    # build the documentation
+    builder.build_doc()
+    # move it
+    builder.move_doc()
+    # remove the build directory
+    builder.clear_tmp()
