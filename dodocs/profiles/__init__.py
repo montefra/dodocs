@@ -81,11 +81,11 @@ def profiles_cmd_arguments(subparser, formatter_class):
 
     # edit a profile
     description = """Open the profile configuration file in an editor"""
-    profile_rm = profile_cmd.add_parser("edit", description=description,
-                                        help=description)
+    profile_edit = profile_cmd.add_parser("edit", description=description,
+                                          help=description)
 
-    profile_rm.add_argument('name', nargs="+",
-                            help='''Name of the profile to edit''')
-    profile_rm.set_defaults(func=edit)
+    profile_edit.add_argument('name', nargs="+",
+                              help='''Name of the profile to edit''')
+    profile_edit.set_defaults(func=edit)
 
     return subparser
