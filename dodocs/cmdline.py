@@ -8,6 +8,7 @@ import argparse as ap
 
 from dodocs import mkdoc
 from dodocs import profiles
+from dodocs import register
 from dodocs import utils
 
 DEF_FORMATTER = ap.ArgumentDefaultsHelpFormatter
@@ -46,4 +47,8 @@ def parse(argv=None):
 
     # build the whole thing
     subparser = mkdoc.build_cmd_arguments(subparser, DEF_FORMATTER)
+
+    # register as a cron job
+    subparser = register.register_cmd_arguments(subparser, DEF_FORMATTER)
+
     return p.parse_args(args=argv)
