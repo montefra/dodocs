@@ -123,7 +123,7 @@ setup(
     entry_points={"console_scripts": ["dodoc = dodocs:main", ], },
 
     # dependences
-    install_requires=['colorama'],
+    install_requires=['colorama', 'python-crontab'],
     extras_require=extras_require(),
     # bootstrap nose to make `nosetests` available to setup.py
     setup_requires=['nose>=1', ],
