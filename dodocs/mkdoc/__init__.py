@@ -50,6 +50,9 @@ def build_doc(args):
     # initialize the builders
     from dodocs.mkdoc.builders import init
     init()
+    # initialize the vcs
+    from dodocs.mkdoc.vcs import init
+    init()
 
     for name in args.name:
         log.info("Building documentation for profile"

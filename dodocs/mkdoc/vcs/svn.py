@@ -10,6 +10,7 @@ import re
 
 import dodocs.utils as dutils
 from dodocs.mkdoc.vcs.base_vcs import BaseVCS
+from dodocs.mkdoc.vcs import register_vcs
 
 
 class Svn(BaseVCS):
@@ -50,3 +51,7 @@ class Svn(BaseVCS):
         """
         return [self.vcs_type, "checkout", self.project_path,
                 dutils.project_dir(self.profile, self.project)]
+
+
+register_vcs("svn", Svn)
+register_vcs("subversion", Svn)

@@ -9,7 +9,7 @@ MIT Licence
 import importlib
 from pathlib import Path
 
-# key: vcs; value: vcs class
+# key: vcs (string); value: vcs class
 _vcs = {}
 "Map of known version control system names to executables"
 

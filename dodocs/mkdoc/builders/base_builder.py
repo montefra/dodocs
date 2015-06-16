@@ -50,9 +50,7 @@ class BaseBuilder(metaclass=abc.ABCMeta):
         self.project_path = conf.get(project, "project_path")
 
         # get or update the source
-        vcs_type = conf.get(project, "vcs")
-        vcs.get_or_update_source(vcs_type, self.project_path)
-        log.debug("%s repository updated", vcs_type)
+        self.vcs_ = vcs.picker(profile, project, conf, log)
 
         # save the language
         self.language = conf.get(project, "language").lower()

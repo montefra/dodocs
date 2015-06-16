@@ -8,6 +8,7 @@ MIT Licence
 
 import dodocs.utils as dutils
 from dodocs.mkdoc.vcs.base_vcs import BaseVCS
+from dodocs.mkdoc.vcs import register_vcs
 
 
 class Git(BaseVCS):
@@ -44,3 +45,6 @@ class Git(BaseVCS):
         """
         return [self.vcs_type, "clone", self.project_path,
                 dutils.project_dir(self.profile, self.project)]
+
+
+register_vcs("git", Git)
