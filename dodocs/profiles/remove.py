@@ -4,7 +4,6 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-import os
 import shutil
 
 import colorama

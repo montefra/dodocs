@@ -84,7 +84,7 @@ def update_repo(vcs_exe):
     """
     cmd = [vcs_exe, "pull"]
     try:
-        stdout = sp.check_output(cmd, stderr=sp.STDOUT)
+        sp.check_output(cmd, stderr=sp.STDOUT)
     except sp.CalledProcessError as e:
         raise VCSError from e
 
@@ -107,6 +107,6 @@ def clone_repo(vcs_exe, from_where):
     """
     cmd = [vcs_exe, "clone", from_where, '.']
     try:
-        stdout = sp.check_output(cmd, stderr=sp.STDOUT)
+        sp.check_output(cmd, stderr=sp.STDOUT)
     except sp.CalledProcessError as e:
         raise VCSError from e

@@ -17,7 +17,7 @@ def setLogger(args, name=None):
     Of the command line arguments are used:
 
     * ``verbose``: if true the logger level is set to DEBUT, otherwise to INFO
-    * ``subparser_name``: to get the name of the branch we're working 
+    * ``subparser_name``: to get the name of the branch we're working
     * any further subparser
 
     Parameters

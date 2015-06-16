@@ -4,11 +4,9 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-import os
 from pathlib import Path
 import shutil
 import string
-import warnings
 
 import colorama
 
@@ -25,7 +23,6 @@ def create(args):
     args : namespace
         parsed command line arguments
     """
-    dodocs_dir = dutils.dodocs_directory()
     log = dlog.getLogger()
 
     for name in args.name:
@@ -85,7 +82,7 @@ def copy_config(profile_dir):
     log.debug("Copy file '{}' into directory '{}'".format(cfg_file,
                                                           profile_dir))
     with cfg_file.open('r') as inf, \
-                (profile_dir / dconf.CONF_FILE).open('w') as outf:
+            (profile_dir / dconf.CONF_FILE).open('w') as outf:
         conf = string.Template(inf.read())
         conf = conf.safe_substitute(version=dutils.get_version())
         outf.write(conf)
