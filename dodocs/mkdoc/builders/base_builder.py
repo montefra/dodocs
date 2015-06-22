@@ -89,7 +89,7 @@ class BaseBuilder(metaclass=abc.ABCMeta):
                               " ".join(self.build_cmd), p.returncode)
 
     @property
-    def html_dir(self):
+    def html_build_dir(self):
         """Directory where the documentation has been built.
 
         If the documentation builder, doesn't allow to decide the output
