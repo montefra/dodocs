@@ -55,9 +55,9 @@ class Python3Builder(bb.BaseBuilder):
         pip = self._venv_bin / 'pip'
         cmd = [str(pip), 'install', '-e']
         if what_install.lower() == 'yes':
-            cmd += ['.']
+            cmd += ['{}'.format(self.vcs_.source_dir)]
         else:
-            cmd += ['.[{}]'.format(what_install)]
+            cmd += ['{}[{}]'.format(self.vcs_.source_dir, what_install)]
         self.log.debug("running '%s'", " ".join(cmd))
 
         p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE,
@@ -77,25 +77,26 @@ class Python3Builder(bb.BaseBuilder):
 
     @property
     def build_cmd(self):
-        project_dir = dutils.project_dir(self.profile, self.project)
-        source_dirs = project_dir.glob('doc*/**/*source*/conf.py')
+        project_dir = self.vcs_.source_dir
+        doc_source_dirs = project_dir.glob('doc*/**/*source*/conf.py')
         try:
-            source_dir = next(source_dirs).parent
+            doc_source_dir = next(doc_source_dirs).parent
         except StopIteration:
             msg = ("The documentation is expected to be found in a `*source*`"
                    " directory, containing a `conf.py` file, at any depth"
                    " within `doc` or `docs` directory")
             raise Py3BuilderError(msg)
 
-        build_dir = dutils.build_dir(self.profile, self.project)
-        cmd = ['sphinx-build', '-b', 'html', '-d', str(build_dir / 'doctrees'),
-               str(source_dir), str(build_dir / 'html')]
+        html_build_dir = self.html_build_dir
+        cmd = ['sphinx-build', '-b', 'html', '-d',
+               str(html_build_dir / '..' / 'doctrees'),
+               str(doc_source_dir), str(html_build_dir)]
         return cmd
 
     def clear_tmp(self):
         """Clear the temporary directory where the documentation has been built
         """
-        shutil.rmtree(str(dutils.build_dir(self.profile, self.project)))
+        shutil.rmtree(str(self.html_build_dir / '..'))
 
 
 register_builder('python3', Python3Builder)

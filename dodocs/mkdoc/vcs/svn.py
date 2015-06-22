@@ -17,6 +17,10 @@ class Svn(BaseVCS):
     """Implement svn handler.
     """
 
+    def __init__(self, profile, project, conf, log):
+        super(Svn, self).__init__(profile, project, conf, log)
+        self.branch = "trunk"
+
     def run_cmd(self, cmd):
         """Run command ``cmd`` in a subprocess, log and return stdout, stderr
         and return code. Subversion doesn't set a return code, but gives it in
@@ -51,6 +55,14 @@ class Svn(BaseVCS):
         """
         return [self.vcs_type, "checkout", self.project_path,
                 dutils.project_dir(self.profile, self.project)]
+
+    @property
+    def source_dir(self):
+        """Directory where the source code is found.
+
+        For now it's just trunk
+        """
+        return super(Svn, self).source_dir() / self.branch
 
 
 register_vcs("svn", Svn)

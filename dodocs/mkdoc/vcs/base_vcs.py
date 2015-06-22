@@ -54,6 +54,8 @@ class BaseVCS(object):
         self.vcs_type = conf.get(project, "vcs")
         self.project_path = conf.get(project, "project_path")
 
+        self.branch = "master"
+
         if self.is_repo():
             self.update_repo()
         else:
@@ -153,3 +155,12 @@ class BaseVCS(object):
         if returncode != 0:
             raise VCSCloneError("Could not clone the repository of project"
                                 " '{}'".format(self.project))
+
+    @property
+    def source_dir(self):
+        """Directory where the source code is found.
+
+        Used instead of the :func:`dutils.project_dir` to allow directory
+        structures like ``subversion``
+        """
+        return dutils.project_dir(self.profile, self.project)
