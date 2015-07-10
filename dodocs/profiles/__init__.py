@@ -50,13 +50,15 @@ def profiles_cmd_arguments(subparser, formatter_class):
                      is a subdirectory and at creation contains a
                      configuration. The user should edit the relevant parts of
                      the configuration file before creating the documentation.
+                     If no 'name' argument is provided, creates only the
+                     '{home}' directory.
                      """
     description = description.format(home=utils.dodocs_directory())
     profile_create = profile_cmd.add_parser("create", description=description,
                                             help="""Create one or more new
                                             profiles""", aliases=['new'])
 
-    profile_create.add_argument('name', nargs="+", help='''Name(s) of the
+    profile_create.add_argument('name', nargs="*", help='''Name(s) of the
                                 profile(s) to create''')
     profile_create.add_argument('-f', '--force', action='store_true',
                                 help='''If the profile(s) already exists, remove it

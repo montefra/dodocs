@@ -25,6 +25,12 @@ def plist(args):
 
     log.debug("Listing profiles")
     dodocs_dir = utils.dodocs_directory()
+
+    if not dodocs_dir.exists():
+        log.error("No dodocs directory found. Create it first with the command"
+                  " 'dodoc profile create [profilename]'")
+        return
+
     dirpath, dirnames = next(os.walk(str(dodocs_dir)))[:2]
     if dirnames:
         msg = colorama.Fore.GREEN + "Available profiles:" + colorama.Fore.RESET

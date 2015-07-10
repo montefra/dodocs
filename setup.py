@@ -2,75 +2,21 @@
 
 Copyright (c) 2015 Francesco Montesano
 """
-import os
+import sys
 try:
     from pathlib import Path
 except ImportError:
     sys.exit("This code requires ``pathlib`` which is shipped with python 3.4"
              " or older")
-import sys
 
 from setuptools import setup, find_packages
-from setuptools.command.develop import develop
-from setuptools.command.install import install
 
 # import only dodocs.utils without relying on it to be in the package to avoid
 # problems with requirements
 dd = Path(__file__).parent / 'dodocs'
 sys.path.insert(0, str(dd))
-from utils import get_version, dodocs_directory
+from utils import get_version
 sys.path.pop(0)
-
-
-# Custom install and develop. Create the directory ``.dodocs`` after
-# installation is done
-# inspired by
-# http://www.niteoweb.com/blog/setuptools-run-custom-code-during-install
-def wrap_run(command_subclass):
-    """A decorator to modify the ``run`` command from `setuptools` to create a
-    ``$HOME/.dodocs`` directory, if it doesn't exist.
-    """
-    orig_run = command_subclass.run
-
-    def modified_run(self):
-        # check if the dodocs_dir exists or not
-        dodocs_dir = dodocs_directory()
-        is_new, is_dir = False, False
-        if not dodocs_dir.exists():
-            is_new = True
-        elif dodocs_dir.is_dir():
-            is_dir = True
-        else:
-            msg = "'{n}' already exists and it's not a directory. 'dodocs'"
-            msg += " uses it as the home directory. If you can,"
-            msg += " rename/remove/... '{n}', otherwise open an issue on"
-            msg += " github and we will try to solve the problem. Installation"
-            msg += " aborted."
-            sys.exit(msg.format(n=dodocs_dir))
-
-        # run the original run
-        orig_run(self)
-
-        # create the directory or use the old one
-        if is_new:
-            dodocs_dir.mkdir()
-            print("\n'{}' directory created\n".format(dodocs_dir))
-        elif is_dir:
-            print("\n'{}' already exists: I'm going to use it,"
-                  " then\n".format(dodocs_dir))
-
-    command_subclass.run = modified_run
-    return command_subclass
-
-
-@wrap_run
-class CustomDevelopCommand(develop):
-    pass
-
-
-@wrap_run
-class CustomInstallCommand(install):
-    pass
 
 
 def extras_require():
@@ -109,8 +55,6 @@ setup(
 
     # custom install and build
     cmdclass={
-        'install': CustomInstallCommand,
-        'develop': CustomDevelopCommand,
     },
 
     # list of packages and data

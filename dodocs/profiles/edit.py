@@ -26,6 +26,11 @@ def edit(args):
     log.debug("opening configuration file for profile {} for"
               " editing".format(args.name))
 
+    if not utils.dodocs_directory.exists():
+        log.error("No dodocs directory found. Create it first with the command"
+                  " 'dodoc profile create [profilename]'")
+        return
+
     for profile in args.name:
         profile_dir = utils.profile_dir(profile)
 
