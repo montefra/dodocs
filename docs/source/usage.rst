@@ -6,6 +6,9 @@ belonging to the same profile are treated together and copied to the same target
 directory (see ``target_dir`` option in the ``[general]`` section in the
 :ref:`configuration file example <conf_example>`).
 
+The home directory is either ``~/.dodocs`` or, if the variable is defined in
+the environment, ``$DODOCSHOME``.
+
 Each of the profiles is a directory under ``~/.dodocs``. The most important file
 in each profile directory is ``dodocs_setup.cfg`` and it contains all the
 information needed by ``dodocs`` to build the documentation. The configuration

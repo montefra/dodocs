@@ -58,8 +58,11 @@ def dodocs_directory():
     dodocs_dir : :class:`Path` instance
         dodocs directory
     """
-    home = Path(os.path.expanduser('~'))
-    dodocs_dir = home / '.dodocs'
+    if 'DODOCSHOME' in os.environ:
+        dodocs_dir = Path(os.environ['DODOCSHOME'])
+    else:
+        home = Path(os.path.expanduser('~'))
+        dodocs_dir = home / '.dodocs'
     return dodocs_dir
 
 
