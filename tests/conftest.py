@@ -1,25 +1,47 @@
 """Global settings and fixtures
 """
+from pathlib import Path
 import os
 
 import pytest
 
 
-# monkey patch the expand user to test directory
+@pytest.fixture(scope='session')
+def dodocs_homedir():
+    """Return the home directory to use during the tests
+
+    Returns
+    -------
+    :class:`pathlib.Path` instance
+    """
+    _path = Path(__file__).parent / 'data' / '.dodocs'
+    return _path
+
+
 @pytest.yield_fixture(scope='session', autouse=True)
-def homedir():
-    """Set the home directory"""
-    print("setting the home directory")
+def homedir(dodocs_homedir):
+    """Set the environment variable for the ``dodocs`` home directory and set up
+    all the necessary things for running the tests. At the end of the test
+    session, remove the ``dodocs`` home directory
+
+    This fixture is auto used and in the session scope
+    """
+    test_homedir = dodocs_homedir
+    os.environ['DODOCSHOME'] = str(test_homedir)
     yield
-    print("tear down the home directory")
+    print("tear down global fixture")
 
 
 @pytest.yield_fixture
 def tmp_homedir(monkeypatch, tmpdir):
-    "Set homedir to a tmp one"
+    """Override ``homedir`` fixture temporarily unsetting the ``DODOCSHOME``
+    environment variable and expanding user directory to a temporary one"""
+    monkeypatch.delitem(os.environ, "DODOCSHOME")
+
     def mockreturn(path):
-        return tmpdir
+        return str(tmpdir)
     monkeypatch.setattr(os.path, 'expanduser', mockreturn)
+
     print("setting up the temp directory '{}'".format(tmpdir))
     yield
     print("tearing down the temp directory '{}'".format(tmpdir))
