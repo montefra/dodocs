@@ -1,4 +1,4 @@
 build
 *egg-info
 .coverage
-cover
+htmlcov
