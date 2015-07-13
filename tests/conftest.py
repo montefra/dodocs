@@ -2,8 +2,11 @@
 """
 from pathlib import Path
 import os
+import shutil
 
 import pytest
+
+import dodocs
 
 
 @pytest.fixture(scope='session')
@@ -18,6 +21,18 @@ def dodocs_homedir():
     return _path
 
 
+@pytest.fixture()
+def default_profile_name():
+    """Return the default profile name: 'test_suite'"""
+    return "test_suite"
+
+
+def _create_project(pname=[default_profile_name()]):
+    """Create a new project"""
+    create_command = "profile create".split() + pname
+    dodocs.main(create_command)
+
+
 @pytest.yield_fixture(scope='session', autouse=True)
 def homedir(dodocs_homedir):
     """Set the environment variable for the ``dodocs`` home directory and set up
@@ -26,10 +41,13 @@ def homedir(dodocs_homedir):
 
     This fixture is auto used and in the session scope
     """
-    test_homedir = dodocs_homedir
-    os.environ['DODOCSHOME'] = str(test_homedir)
-    yield test_homedir
-    print("tear down global fixture")
+    # set the dodocs home in the environment
+    os.environ['DODOCSHOME'] = str(dodocs_homedir)
+    # create a new project
+    _create_project()
+    yield dodocs_homedir
+    shutil.rmtree(str(dodocs_homedir))
+    del os.environ['DODOCSHOME']
 
 
 @pytest.yield_fixture
@@ -38,10 +56,13 @@ def tmp_homedir(monkeypatch, tmpdir):
     environment variable and expanding user directory to a temporary one"""
     monkeypatch.delitem(os.environ, "DODOCSHOME")
 
+    _tmpdir = Path(str(tmpdir))
+
     def mockreturn(path):
-        return str(tmpdir)
+        return str(_tmpdir)
     monkeypatch.setattr(os.path, 'expanduser', mockreturn)
 
-    print("setting up the temp directory '{}'".format(tmpdir))
-    yield Path(str(tmpdir))
-    print("tearing down the temp directory '{}'".format(tmpdir))
+    yield _tmpdir
+
+    if _tmpdir.exists():
+        shutil.rmtree(str(_tmpdir))
