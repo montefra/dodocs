@@ -28,7 +28,7 @@ def homedir(dodocs_homedir):
     """
     test_homedir = dodocs_homedir
     os.environ['DODOCSHOME'] = str(test_homedir)
-    yield
+    yield test_homedir
     print("tear down global fixture")
 
 
@@ -43,5 +43,5 @@ def tmp_homedir(monkeypatch, tmpdir):
     monkeypatch.setattr(os.path, 'expanduser', mockreturn)
 
     print("setting up the temp directory '{}'".format(tmpdir))
-    yield
+    yield Path(str(tmpdir))
     print("tearing down the temp directory '{}'".format(tmpdir))
