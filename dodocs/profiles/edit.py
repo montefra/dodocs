@@ -23,8 +23,8 @@ def edit(args):
     """
     if not utils.dodocs_directory.exists():
         log = dlog.getLogger()
-        log.error("No dodocs directory found. Create it first with the command"
-                  " 'dodoc profile create [profilename]'")
+        log.critical("No dodocs directory found. Create it first with the"
+                     " command 'dodoc profile create [profilename]'")
         return
 
     for profile in args.name:
