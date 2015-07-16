@@ -17,7 +17,7 @@ def _colorformatter():
     """Returns the color formatter"""
     formatter = colorlog.ColoredFormatter(
         fmt=("%(log_color)s%(levelname)-8s [%(subc)s - %(project)s -"
-             " %(profile)s]: %(message)s"),
+             " %(profile)s]%(reset)s: %(message)s"),
         datefmt=None,
         reset=True,
         log_colors={
