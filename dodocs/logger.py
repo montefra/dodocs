@@ -149,4 +149,3 @@ def set_profile(profile: str, name=None):
         name of the logger to use. ``None`` is the root logger
     """
     _extra[name]['profile'] = profile
-
