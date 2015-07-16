@@ -11,8 +11,6 @@ MIT Licence
 import configparser as confp
 from pathlib import Path
 
-import colorama
-
 import dodocs.logger as dlog
 import dodocs.utils as du
 
@@ -80,15 +78,17 @@ def get_config(profile):
     DodocConfigError
         if the configuration file does not exist
     """
+    dlog.set_profile(profile)
     try:
         return _config_dic[profile]
     except KeyError:
         conf = confp.ConfigParser(defaults=defaults())
-        fname = du.dodocs_directory() / profile / CONF_FILE
+        fname = du.profile_dir(profile) / CONF_FILE
         if not fname.exists():
             raise DodocConfigError("The configuration file for profile {} does"
                                    " not exist".format(profile))
         conf.read(str(fname))
+        dlog.getLogger().debug("Configuration file loaded")
 
         check_edited(conf, profile)
         check_version(conf, profile)
@@ -113,18 +113,16 @@ def check_version(conf, profile):
     DodocConfigError
         if the configuration file doesn't have the version option
     """
+    dlog.set_profile(profile)
     log = dlog.getLogger()
     try:
         conf_version = conf.get("general", "version")
         current_version = du.get_version()
         if conf_version != current_version:
-            msg = ("[{p}] The current `dodocs` version {dv} is different from"
-                   " the one in the configuration file {dc}. Beware that the"
-                   " built might fail."
-                   )
-            log.warn(colorama.Fore.YELLOW + msg.format(dv=current_version,
-                                                       dc=conf_version,
-                                                       p=profile))
+            msg = ("The current `dodocs` version %s is different from"
+                   " the one in the configuration file %s. Something bad might"
+                   " happen")
+            log.warn(msg, current_version, conf_version)
     except confp.NoOptionError:
         msg = ("[{p}] The configuration file doesn't have a `version` option."
                " Are you sure that it is a `dodocs` configuration"
@@ -149,7 +147,7 @@ def check_edited(conf, profile):
     """
     try:
         if conf.getboolean('general', 'is_edited'):
-            msg = ("[{p}] The configuration file has likely not been edited."
+            msg = ("[{p}] The configuration file has not been edited."
                    " Aborting")
             raise DodocConfigError(msg.format(p=profile))
     except confp.NoOptionError:
