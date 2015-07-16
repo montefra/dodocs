@@ -9,7 +9,7 @@ import subprocess as sp
 import sys
 
 import dodocs.config as dconf
-from dodocs.logger import getLogger
+import dodocs.logger as dlog
 from dodocs import utils
 
 
@@ -21,21 +21,23 @@ def edit(args):
     args : namespace
         parsed command line arguments
     """
-    log = getLogger()
-
-    log.debug("opening configuration file for profile {} for"
-              " editing".format(args.name))
-
     if not utils.dodocs_directory.exists():
+        log = dlog.getLogger()
         log.error("No dodocs directory found. Create it first with the command"
                   " 'dodoc profile create [profilename]'")
         return
 
     for profile in args.name:
+        dlog.set_profile(profile)
+        log = dlog.getLogger()
+
+        log.debug("opening configuration file for profile {} for"
+                  " editing".format(args.name))
+
         profile_dir = utils.profile_dir(profile)
 
         if not profile_dir.exists():
-            log.warn("Profile '{}' does not exist. Bye".format(profile))
+            log.warn("Profile does not exist. Bye")
             return
 
         config_file = str(profile_dir / dconf.CONF_FILE)
