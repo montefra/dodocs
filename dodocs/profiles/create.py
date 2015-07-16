@@ -8,8 +8,6 @@ from pathlib import Path
 import shutil
 import string
 
-import colorama
-
 import dodocs.config as dconf
 import dodocs.logger as dlog
 import dodocs.utils as dutils
@@ -33,27 +31,24 @@ def create(args):
             log.info("Home directory already exists")
 
     for name in args.name:
-        log.info("Creating profile {}".format(name))
+        dlog.set_profile(name)
+        log.info("Creating profile")
         profile_dir = dutils.profile_dir(name)
-        log.debug("Profile directory: {}".format(profile_dir))
+        log.debug("Profile directory: %s", profile_dir)
 
         # deal with existing profile
         if profile_dir.exists():
             if args.force and profile_dir.is_symlink():
-                log.warning(colorama.Fore.YELLOW +
-                            "Unlinking and Removing '{}'".format(name))
+                log.warning("Unlinking and removing existing profile")
                 realpath = profile_dir.resolve()
                 profile_dir.unlink()
                 shutil.rmtree(str(realpath))
             elif args.force and (profile_dir.is_dir() or
                                  profile_dir.is_file()):
-                log.warning(colorama.Fore.YELLOW +
-                            "Removing '{}'".format(name))
+                log.warning("Removing existing profile".format(name))
                 shutil.rmtree(str(profile_dir))
             else:
-                msg = colorama.Fore.RED
-                msg += "Profile '{pd}' already exists. Aborting."
-                log.error(msg.format(pd=name))
+                log.error("Profile already exists. Aborting.")
                 continue
 
         # create new profiles
@@ -64,14 +59,13 @@ def create(args):
         try:
             profile_dir.mkdir(parents=True)
         except FileExistsError:
-            log.error(colorama.Fore.RED +
-                      "'{pd}' already exists. Aborting.")
+            log.error("Profile already exists. Aborting.")
             continue
 
         copy_config(profile_dir)
         if args.link:
             link_dir.symlink_to(profile_dir, target_is_directory=True)
-        log.info(colorama.Fore.GREEN + "profile '{}' created".format(name))
+        log.info("profile created")
 
 
 def copy_config(profile_dir):
