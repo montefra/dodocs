@@ -42,10 +42,11 @@ def plist(args):
                 for project in dconf.get_projects(d):
                     dlog.set_profile("")
                     log.info("    + %s", project)
-            except dconf.DodocConfigError:
+            except dconf.DodocConfigError as e:
+                dlog.set_profile("")
                 msg = ("    + there is a problem with the configuration"
-                       " file.")
-                log.error(msg, exc_info=True)
+                       " file: %s")
+                log.error(msg, str(e))
 
     else:
         log.warning("No profile found")
