@@ -21,15 +21,14 @@ def edit(args):
     args : namespace
         parsed command line arguments
     """
-    if not utils.dodocs_directory.exists():
-        log = dlog.getLogger()
+    log = dlog.getLogger()
+    if not utils.dodocs_directory().exists():
         log.critical("No dodocs directory found. Create it first with the"
                      " command 'dodoc profile create [profilename]'")
         return
 
     for profile in args.name:
         dlog.set_profile(profile)
-        log = dlog.getLogger()
 
         log.debug("opening configuration file for profile {} for"
                   " editing".format(args.name))

@@ -18,10 +18,10 @@ def remove(args):
     args : namespace
         parsed command line arguments
     """
+    log = dlog.getLogger()
 
     for name in args.name:
         dlog.set_profile(name)
-        log = dlog.getLogger()
         log.debug("Removing profile")
         profile_dir = dutils.profile_dir(name)
 

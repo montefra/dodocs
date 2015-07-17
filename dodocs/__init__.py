@@ -26,7 +26,6 @@ def main(argv=None):
 
     dlog.setLogger(args)
     # make sure to reset the subcommand name
-    dlog.set_subcommand(args)
     log = dlog.getLogger()
 
     if "func" in args:
