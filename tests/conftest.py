@@ -39,7 +39,10 @@ def homedir(dodocs_homedir):
     all the necessary things for running the tests. At the end of the test
     session, remove the ``dodocs`` home directory
 
-    This fixture is auto used and in the session scope
+    Yields
+    ------
+    :class:`pathlib.Path` instance
+        home directory name
     """
     # set the dodocs home in the environment
     os.environ['DODOCSHOME'] = str(dodocs_homedir)
@@ -54,7 +57,13 @@ def homedir(dodocs_homedir):
 @pytest.yield_fixture
 def tmp_homedir(monkeypatch, tmpdir):
     """Override ``homedir`` fixture temporarily unsetting the ``DODOCSHOME``
-    environment variable and expanding user directory to a temporary one"""
+    environment variable and expanding user directory to a temporary one
+
+    Yields
+    ------
+    :class:`pathlib.Path` instance
+        temporary directory name
+    """
     monkeypatch.delitem(os.environ, "DODOCSHOME", raising=False)
 
     _tmpdir = Path(str(tmpdir))
