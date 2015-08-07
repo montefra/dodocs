@@ -1,4 +1,4 @@
-"""Create the profile.
+"""Remove the profiles.
 
 Copyright (c) 2015 Francesco Montesano
 MIT Licence
@@ -22,13 +22,13 @@ def remove(args):
 
     for name in args.name:
         dlog.set_profile(name)
-        log.debug("Removing profile")
         profile_dir = dutils.profile_dir(name)
 
         if not profile_dir.exists():
             log.warn("Profile does not exist")
             continue
 
+        log.debug("Removing profile")
         try:
             if profile_dir.is_symlink():
                 realpath = profile_dir.resolve()
