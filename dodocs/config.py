@@ -58,7 +58,7 @@ def defaults():
 
 
 @du.format_docstring(CONF_FILE)
-def get_config(profile):
+def get_config(profile, check_config=True):
     """Returns the configuration for the given profile. If it doesn't exists,
     first create it.
 
@@ -68,6 +68,8 @@ def get_config(profile):
     ----------
     profile : string
         name of the profile
+    check_config : bool, optional
+        if ``False``, do no check if the configuration file is correct
 
     Returns
     -------
@@ -78,20 +80,22 @@ def get_config(profile):
     DodocConfigError
         if the configuration file does not exist
     """
-    dlog.set_profile(profile)
     try:
         return _config_dic[profile]
     except KeyError:
+        dlog.set_profile(profile)
         conf = confp.ConfigParser(defaults=defaults())
         fname = du.profile_dir(profile) / CONF_FILE
         if not fname.exists():
             raise DodocConfigError("The configuration file for profile {} does"
                                    " not exist".format(profile))
         conf.read(str(fname))
+        dlog.set_profile(profile)
         dlog.getLogger().debug("Configuration file loaded")
 
-        check_edited(conf, profile)
-        check_version(conf, profile)
+        if check_config:
+            check_edited(conf, profile)
+            check_version(conf, profile)
 
         _config_dic[profile] = conf
         return conf
@@ -175,20 +179,22 @@ def check_sections(conf, profile):
             raise DodocConfigError(msg.format(p=profile, s=es))
 
 
-def get_projects(profile):
+def get_projects(profile, check_config=True):
     """Get the list of projects for the given profile
 
     Parameters
     ----------
     profile : string
         name of the profile
+    check_config : bool, optional
+        if ``False``, do no check if the configuration file is correct
 
     Returns
     -------
     projects : list of strings
         name of the projects
     """
-    conf = get_config(profile)
+    conf = get_config(profile, check_config=check_config)
     projects = conf.sections()
     # remove the expected sections
     for es in EXPECTED_SECTIONS:
