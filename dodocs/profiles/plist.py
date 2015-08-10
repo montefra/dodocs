@@ -19,6 +19,8 @@ def plist(args):
     args : namespace
         parsed command line arguments
     """
+    dlog.set_profile("")
+    dlog.set_project("")
     log = dlog.getLogger()
 
     log.debug("Listing profiles")
@@ -39,7 +41,7 @@ def plist(args):
                 msg += " (-> {})".format(profile_dir.resolve())
             log.info(msg)
             try:
-                for project in dconf.get_projects(d):
+                for project in dconf.get_projects(d, check_config=False):
                     dlog.set_profile("")
                     log.info("    + %s", project)
             except dconf.DodocConfigError as e:
