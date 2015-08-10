@@ -31,15 +31,21 @@ def profile_edit():
 
 
 # profile listing
-def test_list_no_exist(tmp_homedir, profile_list, caplog):
+def test_list_no_exist(tmp_and_clear, profile_list, caplog):
     """Test that listing without a dodocs directory fails"""
     record = caplog.records()[0]
     assert record.levelname == "CRITICAL"
     assert "No dodocs directory found" in record.message
 
 
+def test_list(create_and_clear, profile_list, caplog):
+    "List profiles"
+    print(len(caplog.records()))
+    assert all([r.levelname == "INFO" for r in caplog.records()])
+
+
 # profile removal
-def test_rm_no_exists(tmp_homedir, profile_rm, caplog):
+def test_rm_no_exists(tmp_and_clear, profile_rm, caplog):
     """Test that removing without a dodocs directory print a warning as first
     message"""
     record = caplog.records()[0]
@@ -48,19 +54,12 @@ def test_rm_no_exists(tmp_homedir, profile_rm, caplog):
 
 
 # profile editing
-def test_edit_no_exists(tmp_homedir, profile_edit, caplog):
+def test_edit_no_exists(tmp_and_clear, profile_edit, caplog):
     """Test that removing without a dodocs directory print a warning as first
     message"""
     record = caplog.records()[0]
     assert record.levelname == "CRITICAL"
     assert "No dodocs directory found" in record.message
-
-
-@pytest.mark.skipif("True")
-def test_list():
-    "List profiles"
-    command_line = 'profile list'
-    dodocs.main(command_line.split())
 
 
 @pytest.mark.skipif("True")
