@@ -31,17 +31,35 @@ def profile_edit():
 
 
 # profile listing
-def test_list_no_exist(tmp_and_clear, profile_list, caplog):
+def test_list_no_exist_home(tmp_and_clear, profile_list, caplog):
     """Test that listing without a dodocs directory fails"""
     record = caplog.records()[0]
     assert record.levelname == "CRITICAL"
     assert "No dodocs directory found" in record.message
 
 
+def test_list_no_exist_profile(mkdodocs_dir, profile_list, clear_conf_log, caplog):
+    """Test that listing without a dodocs directory fails"""
+    record = caplog.records()[1]
+    assert record.levelname == "WARNING"
+    assert "No profile found" in record.message
+
+
 def test_list(create_and_clear, profile_list, caplog):
     "List profiles"
-    print(len(caplog.records()))
-    assert all([r.levelname == "INFO" for r in caplog.records()])
+    list_record = [r.levelname == "INFO" for r in caplog.records() if
+                   'profile.list' in r.subc]
+    assert all(list_record)
+    assert len(list_record) == 3
+
+
+def test_list_link(create_symlink_and_clear, profile_list, caplog):
+    """Test the linking of the profile"""
+    list_record = [r.levelname == "INFO" for r in caplog.records() if
+                   'profile.list' in r.subc]
+    assert all(list_record)
+    assert len(list_record) == 3
+    assert ("(-> " + create_symlink_and_clear[1] + ")") in caplog.text()
 
 
 # profile removal
