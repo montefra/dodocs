@@ -23,12 +23,9 @@ def create(args):
     """
     log = dlog.getLogger()
 
-    if not args.name:
-        if not dutils.dodocs_directory().exists():
-            dutils.dodocs_directory().mkdir(parents=True)
-            log.info("Home directory created")
-        else:
-            log.info("Home directory already exists")
+    if not dutils.dodocs_directory().exists():
+        dutils.dodocs_directory().mkdir(parents=True)
+        log.info("Home directory created")
 
     for name in args.name:
         dlog.set_profile(name)
