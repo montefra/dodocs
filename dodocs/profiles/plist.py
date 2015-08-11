@@ -40,15 +40,9 @@ def plist(args):
             if profile_dir.is_symlink():
                 msg += " (-> {})".format(profile_dir.resolve())
             log.info(msg)
-            try:
-                for project in dconf.get_projects(d, check_config=False):
-                    dlog.set_profile("")
-                    log.info("    + %s", project)
-            except dconf.DodocConfigError as e:
+            for project in dconf.get_projects(d, check_config=False):
                 dlog.set_profile("")
-                msg = ("    + there is a problem with the configuration"
-                       " file: %s")
-                log.error(msg, str(e))
+                log.info("    + %s", project)
 
     else:
         log.warning("No profile found")
