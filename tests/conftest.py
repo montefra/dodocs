@@ -11,6 +11,12 @@ import dodocs.config as dconfig
 import dodocs.logger as dlog
 
 
+def _create_profile(pname):
+    """Create a new profile with name ``pname``"""
+    create_command = "profile create " + pname
+    dodocs.main(create_command.split())
+
+
 @pytest.fixture
 def dodocs_homedir(monkeypatch):
     """Set in ``DODOCSHOME`` and return the home directory to use during the
@@ -57,12 +63,6 @@ def default_profile_name():
     return "test_suite"
 
 
-def _create_profile(pname):
-    """Create a new project with name ``pname``"""
-    create_command = "profile create " + pname
-    dodocs.main(create_command.split())
-
-
 @pytest.yield_fixture
 def set_dodocs(dodocs_homedir, default_profile_name):
     """Create the project and returns the directory and the name of the
@@ -76,6 +76,38 @@ def set_dodocs(dodocs_homedir, default_profile_name):
     # create a new profile
     _create_profile(default_profile_name)
     yield dodocs_homedir, default_profile_name
+    if dodocs_homedir.exists():
+        shutil.rmtree(str(dodocs_homedir))
+
+
+@pytest.yield_fixture
+def set_dodocs_link(dodocs_homedir, default_profile_name, tmpdir):
+    """Create the project symlinked to something else and returns the directory
+    and the name of the project. Removes the directory afterwards.
+
+    Yields
+    ------
+    :class:`pathlib.Path` instance
+        home directory name
+    string
+        profile directory at which the link points
+    """
+    # create a new profile
+    print(tmpdir.exists())
+    link_to = " -l {}".format(str(tmpdir))
+    _create_profile(default_profile_name + link_to)
+    yield dodocs_homedir, os.path.join(str(tmpdir), default_profile_name)
+    if dodocs_homedir.exists():
+        shutil.rmtree(str(dodocs_homedir))
+    if tmpdir.exists():
+        shutil.rmtree(str(tmpdir))
+
+
+@pytest.yield_fixture
+def mkdodocs_dir(dodocs_homedir):
+    """Create the dodocs home directory without adding any profile"""
+    _create_profile("")
+    yield dodocs_homedir
     if dodocs_homedir.exists():
         shutil.rmtree(str(dodocs_homedir))
 
@@ -101,6 +133,15 @@ def create_and_clear(set_dodocs, clear_conf_log):
     Returns the directory and the name of the
     project. Removes the directory afterwards."""
     yield set_dodocs
+
+
+@pytest.yield_fixture
+def create_symlink_and_clear(set_dodocs_link, clear_conf_log):
+    """Combine the creation and cleanup of the symlinked dodocs project
+
+    Returns the directory and the name of the
+    project. Removes the directory afterwards."""
+    yield set_dodocs_link
 
 
 @pytest.yield_fixture
