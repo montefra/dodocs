@@ -24,9 +24,9 @@ def test_tmp_homedir(tmp_homedir):
     assert du.dodocs_directory() == tmp_homedir / '.dodocs'
 
 
-def test_homedir(homedir):
+def test_homedir(dodocs_homedir):
     """Correct default testing home directory"""
-    assert du.dodocs_directory() == homedir
+    assert du.dodocs_directory() == dodocs_homedir
 
 
 def test_profile_dir(dodocs_homedir):
