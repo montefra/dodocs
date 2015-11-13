@@ -4,8 +4,6 @@ Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
-import colorama
-
 import dodocs.config as dconf
 import dodocs.logger as dlog
 
@@ -54,7 +52,7 @@ def build_doc(args):
     init()
 
     for name in args.name:
-        log.info(colorama.Fore.GREEN + "Building documentation for profile"
+        log.info("Building documentation for profile"
                  " '{}'".format(name))
         try:
             dconf.get_config(name)
