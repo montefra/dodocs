@@ -6,13 +6,36 @@ MIT Licence
 
 import logging
 
+import colorlog
 
-_logadapt = {}
+
+_def_extras = {'subc': '', 'profile': '', 'project': ''}
+_extra = {}
+
+
+def _colorformatter():
+    """Returns the color formatter"""
+    formatter = colorlog.ColoredFormatter(
+        fmt=("%(log_color)s%(levelname)-8s [%(subc)s - %(profile)s -"
+             " %(project)s]%(reset)s: %(message)s"),
+        datefmt=None,
+        reset=True,
+        log_colors={
+                'DEBUG':    'cyan',
+                'INFO':     'green',
+                'WARNING':  'yellow',
+                'ERROR':    'red',
+                'CRITICAL': 'red,bg_white',
+        },
+        secondary_log_colors={},
+        style='%'
+        )
+    return formatter
 
 
 def setLogger(args, name=None):
-    """Create the logger instance and save a :class:`logging.LoggerAdapter`
-    instance to enable the creation of custom format line.
+    """Create the logger instance and save the extra dictionary used to create
+    a :class:`logging.LoggerAdapter` instance.
 
     Of the command line arguments are used:
 
@@ -26,18 +49,11 @@ def setLogger(args, name=None):
         parsed command line options
     name : string or None
         name of the logger to use. ``None`` is the root logger
-
-    Returns
-    -------
-    :class:`~logging.LoggerAdapter`
     """
-    # name of the asked command
-    subc = _get_subc(args)
-    subcd = {'subc': subc}
+    # if extra already exists, then the logger has also already initialised
     try:
-        logadapt = _logadapt[name]
-        logadapt.extra = subcd
-    except KeyError:
+        extra = _extra[name]
+    except KeyError:  # initialise the logger
         log = logging.getLogger(name=name)
 
         # set level
@@ -48,18 +64,18 @@ def setLogger(args, name=None):
         log.setLevel(level)
 
         # create the stdout handler and set the formatter
-        fmt = "[%(subc)s - %(levelname)s]: %(message)s"
-        formatter = logging.Formatter(fmt=fmt)
         handler = logging.StreamHandler()
         handler.setLevel(level)
-        handler.setFormatter(formatter)
+        handler.setFormatter(_colorformatter())
         log.addHandler(handler)
 
-        # create the subc string
-        logadapt = logging.LoggerAdapter(log, subcd)
+        # create the extra entry
+        extra = _def_extras.copy()
 
-    _logadapt[name] = logadapt
-    return logadapt
+    # name of the asked command
+    subc = _get_subc(args)
+    extra['subc'] = subc
+    _extra[name] = extra
 
 
 def _get_subc(args):
@@ -81,14 +97,55 @@ def _get_subc(args):
 
 
 def getLogger(name=None):
-    """Returns the adapted logger with called ``name`` or a standard logger as
-    fallback
+    """Returns the adapted logger based on the logger called ``name``
 
     Returns
     -------
-    :class:`~logging.LoggerAdapter` or :class:`~logging.Logger`
+    :class:`~logging.LoggerAdapter`
     """
     try:
-        return _logadapt[name]
+        extra = _extra[name]
     except KeyError:
-        return logging.getLogger(name)
+        extra = _def_extras.copy()
+    return logging.LoggerAdapter(logging.getLogger(name), extra)
+
+
+def set_subcommand(args, name=None):
+    """Set the subcommand name in the logger adapter extra dictionary
+
+    Parameters
+    ----------
+    Parameters
+    ----------
+    args : Namespace
+        parsed command line options
+    name : string or None
+        name of the logger to use. ``None`` is the root logger
+    """
+    _extra[name]['subc'] = _get_subc(args)
+
+
+def set_project(project: str, name=None):
+    """Set the name of the project in the logger adapter extra dictionary
+
+    Parameters
+    ----------
+    project : string
+        name of the project
+    name : string or None
+        name of the logger to use. ``None`` is the root logger
+    """
+    _extra[name]['project'] = project
+
+
+def set_profile(profile: str, name=None):
+    """Set the name of the profile in the logger adapter extra dictionary
+
+    Parameters
+    ----------
+    profile : string
+        name of the profile
+    name : string or None
+        name of the logger to use. ``None`` is the root logger
+    """
+    _extra[name]['profile'] = profile

@@ -1,12 +1,10 @@
-"""Create the profile.
+"""Remove the profiles.
 
 Copyright (c) 2015 Francesco Montesano
 MIT Licence
 """
 
 import shutil
-
-import colorama
 
 import dodocs.logger as dlog
 import dodocs.utils as dutils
@@ -23,13 +21,14 @@ def remove(args):
     log = dlog.getLogger()
 
     for name in args.name:
-        log.debug("Removing profile {}".format(name))
+        dlog.set_profile(name)
         profile_dir = dutils.profile_dir(name)
 
         if not profile_dir.exists():
-            log.warn("Profile {} does not exist".format(name))
+            log.warn("Profile does not exist")
             continue
 
+        log.debug("Removing profile")
         try:
             if profile_dir.is_symlink():
                 realpath = profile_dir.resolve()
@@ -38,7 +37,6 @@ def remove(args):
             else:
                 shutil.rmtree(str(profile_dir))
         except FileNotFoundError:
-            msg = "The removal of profile {} failed".format(name)
-            log.error(msg, exc_info=True)
+            log.error("The removal of profile failed", exc_info=True)
 
-        log.info(colorama.Fore.GREEN + "profile '{}' removed".format(name))
+        log.info("profile removed")
