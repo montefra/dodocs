@@ -11,7 +11,7 @@ import dodocs.config as dconfig
 import dodocs.logger as dlog
 
 
-def _create_profile(pname):
+def create_profile(pname):
     """Create a new profile with name ``pname``"""
     create_command = "profile create " + pname
     dodocs.main(create_command.split())
@@ -74,7 +74,7 @@ def set_dodocs(dodocs_homedir, default_profile_name):
         home directory name
     """
     # create a new profile
-    _create_profile(default_profile_name)
+    create_profile(default_profile_name)
     yield dodocs_homedir, default_profile_name
     if dodocs_homedir.exists():
         shutil.rmtree(str(dodocs_homedir))
@@ -95,7 +95,7 @@ def set_dodocs_link(dodocs_homedir, default_profile_name, tmpdir):
     # create a new profile
     print(tmpdir.exists())
     link_to = " -l {}".format(str(tmpdir))
-    _create_profile(default_profile_name + link_to)
+    create_profile(default_profile_name + link_to)
     yield dodocs_homedir, os.path.join(str(tmpdir), default_profile_name)
     if dodocs_homedir.exists():
         shutil.rmtree(str(dodocs_homedir))
@@ -106,7 +106,7 @@ def set_dodocs_link(dodocs_homedir, default_profile_name, tmpdir):
 @pytest.yield_fixture
 def mkdodocs_dir(dodocs_homedir):
     """Create the dodocs home directory without adding any profile"""
-    _create_profile("")
+    create_profile("")
     yield dodocs_homedir
     if dodocs_homedir.exists():
         shutil.rmtree(str(dodocs_homedir))
